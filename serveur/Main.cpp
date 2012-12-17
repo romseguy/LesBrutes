@@ -13,25 +13,40 @@ int main()
 
 	if (iResult != NO_ERROR)
 	{
-		wprintf(L"WSAStartup failed with error: %ld\n", iResult);
+		printf("WSAStartup failed with error: %d\n", iResult);
 		return 1;
 	}
 
-	// Ouverture socket
-	SocketHandler handler;
-	SOCKET master = handler.open(5678);
-	handler.set_session(new AuthSocket(&handler));
-
-	while (!stopEvent)
+	try
 	{
-		SOCKET slave = accept(master, NULL, 0);
-		cout << "Nouveau client" << endl;
+		// Ouverture socket
+		SocketHandler handler;
+		SOCKET master = handler.open(5678);
+		handler.set_session(new AuthSocket(&handler));
+		cout << "Serveur ON" << endl;
 
-		while (slave != NULL)
+		while (!stopEvent)
 		{
-			handler.handle_input();
+			cout << "Attente client" << endl;
+			SOCKET slave = accept(master, NULL, 0);
+			cout << "Nouveau client" << endl;
+
+			while (slave != NULL)
+			{
+				handler.handle_input();
+			}
 		}
+
+		closesocket(master);
 	}
+	catch (exception e)
+	{
+		printf("SOCKET ERROR : %s : %ld", e.what(), WSAGetLastError());
+		WSACleanup ();
+		return 1;
+	}
+
+	WSACleanup ();
 
 	return 0;
 }

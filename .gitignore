@@ -2,4 +2,4 @@
 Debug
 serveur/Debug
 ipch
-serveur.sdf
+*.sdf

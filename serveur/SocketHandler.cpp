@@ -3,7 +3,7 @@
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
-SocketHandler::SocketHandler()
+SocketHandler::SocketHandler() : session_(NULL)
 {
 }
 
