@@ -35,6 +35,8 @@ SOCKET SocketHandler::open(short service)
 	if (listen (s, 5) == SOCKET_ERROR)
 		throw exception ("Listen Error");
 
+	peer = s;
+
 	return s;
 }
 
@@ -44,6 +46,14 @@ void SocketHandler::set_session(Session* session)
 		delete session_;
 
 	session_ = session;
+}
+
+bool SocketHandler::recv_soft(char* buf, size_t len)
+{
+	if (recv(peer, buf, len, NULL) < 0)
+		throw exception("Erreur : %d", WSAGetLastError());
+
+	return true;
 }
 
 int SocketHandler::handle_input()

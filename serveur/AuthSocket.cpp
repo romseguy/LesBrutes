@@ -49,13 +49,13 @@ AuthSocket::~AuthSocket()
 
 void AuthSocket::OnRead()
 {
-	//char _cmd;
+	char _cmd;
 
 	while (true)
 	{
 		// on vérifie que les données reçues correspondent à une commande
-		//if (handler->recv_soft((char *) &_cmd, 1))
-			//return;
+		if (!handler->recv_soft((char *) &_cmd, 1))
+			return;
 	}
 }
 

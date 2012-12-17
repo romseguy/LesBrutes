@@ -21,11 +21,14 @@ class SocketHandler
 		SOCKET open(short);
 		void set_session(Session* session);
 
+		virtual bool recv_soft(char* buf, size_t len);
+
 		// Gère les entrées / sorties de la socket
 		int handle_input(void);
 		int handle_output(void);
 
 	private:
+		SOCKET peer;
 		Session* session_;
 };
 
