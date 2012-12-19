@@ -11,15 +11,10 @@ SocketHandler::~SocketHandler()
 
 void SocketHandler::open()
 {
-	struct protoent *ppe = getprotobyname("tcp");
-
-	if (ppe == NULL) 
-		throw exception ("Illegal Protocol");
-
-	SOCKET s = socket (AF_INET, SOCK_STREAM, ppe->p_proto);
+	SOCKET s = socket (AF_INET, SOCK_STREAM, 0);
 
 	if (s == INVALID_SOCKET) 
-		throw exception ("Invalid Socket");
+		fl_alert("Socket invalide. Exception no : %ld", WSAGetLastError());
 
 	struct sockaddr_in sin;
 	memset (&sin, 0, sizeof(sin));
@@ -28,7 +23,7 @@ void SocketHandler::open()
 	sin.sin_port = htons(5678);
 
 	if (connect (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
-		throw exception ("Connect Error");
+		fl_alert("Echec connect. Exception no : %ld", WSAGetLastError());
 
 	peer = s;
 }
