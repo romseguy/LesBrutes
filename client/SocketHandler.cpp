@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "SocketHandler.h"
 
 SocketHandler::SocketHandler() : session_(NULL), serveraddress("127.0.0.1")
@@ -10,10 +9,10 @@ SocketHandler::~SocketHandler()
 {
 }
 
-void SocketHandler::open(Fl_Widget* o , void* userData)
+void SocketHandler::open()
 {
-	int port = 5678;
 	struct protoent *ppe = getprotobyname("tcp");
+
 	if (ppe == NULL) 
 		throw exception ("Illegal Protocol");
 
@@ -22,16 +21,16 @@ void SocketHandler::open(Fl_Widget* o , void* userData)
 	if (s == INVALID_SOCKET) 
 		throw exception ("Invalid Socket");
 
-   struct sockaddr_in sin;
-   memset (&sin, 0, sizeof(sin));
-   sin.sin_family = AF_INET;
+	struct sockaddr_in sin;
+	memset (&sin, 0, sizeof(sin));
+	sin.sin_family = AF_INET;
+	sin.sin_addr.s_addr = inet_addr (serveraddress.c_str());
+	sin.sin_port = htons(5678);
 
-   sin.sin_addr.s_addr = inet_addr (serveraddress.c_str());
+	if (connect (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
+		throw exception ("Connect Error");
 
-   sin.sin_port = htons(port);
-
-   if (connect (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
-      throw exception ("Connect Error");
+	peer = s;
 }
 
 void SocketHandler::set_session(Session* session)

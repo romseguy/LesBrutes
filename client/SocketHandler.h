@@ -18,7 +18,7 @@ class SocketHandler
 		SocketHandler(void);
 		virtual ~SocketHandler(void);
 
-		void open(Fl_Widget* o , void* userData);
+		void open(void);
 		void set_session(Session* session);
 
 		bool recv_soft(char* buf, size_t len);

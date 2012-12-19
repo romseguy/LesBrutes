@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 

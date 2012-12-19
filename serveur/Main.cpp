@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
@@ -7,7 +6,7 @@ bool stopEvent = false;
 
 int main()
 {
-	// Initialisation Winsock
+	// Initialisation Winsock prérequis Windows
 	WSADATA wsaData;
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
