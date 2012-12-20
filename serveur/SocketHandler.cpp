@@ -64,6 +64,16 @@ int SocketHandler::recv_soft(char* buf, size_t len)
 	return nBytes;
 }
 
+int SocketHandler::send_soft(char* buf, size_t len)
+{
+	int nBytes = send(slave, buf, len, 0);
+
+	if (nBytes == 0)
+		throw exception("Erreur send : %d", WSAGetLastError());
+
+	return nBytes;
+}
+
 int SocketHandler::handle_input()
 {
 	if (session_ != NULL)

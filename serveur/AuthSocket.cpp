@@ -48,14 +48,18 @@ AuthSocket::~AuthSocket()
 
 void AuthSocket::OnRead()
 {
-	char _cmd;
-
+	cout << "sending ..." << endl;
+	const char test[5] = "test";
+	int nBytes = handler->send_soft((char*) &test, 5);
+	cout << "Sent : " << nBytes << " bytes" << endl;
+	
+	/*char _cmd;
 	while (true)
 	{
 		// on attend un char (1 octet ou 8 bits)
 		if (handler->recv_soft((char *) &_cmd, 1) != 0)
 			cout << "recu!";
-	}
+	}*/
 }
 
 bool AuthSocket::HandleLogonChallenge()

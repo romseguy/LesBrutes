@@ -6,7 +6,6 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 	static void but_connexion_cb(Fl_Widget* w, void* data)
 	{
 		((SocketHandler*) data)->open();
-		fl_alert("Connexion ouverte");
 	}
 
 	public:
@@ -25,8 +24,9 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 		}
 
 		virtual void OnRead(void) {
-			char* buf = "1";
-			handler->send_soft(buf, 1);
+			char test[5];
+			int nBytes = handler->recv_soft((char*) &test, 5);
+			fl_alert("%d recus", nBytes);
 		};
 
 	private:

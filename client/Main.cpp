@@ -10,7 +10,8 @@ int main()
 
 	Fl::scheme("gtk+");
 	SocketHandler* handler = new SocketHandler("127.0.0.1");
-	handler->set_session(new AuthWindow(400, 250, "Les Brutes", handler));
+	AuthWindow* login = new AuthWindow(400, 250, "Les Brutes", handler);
+	handler->set_session(login);
 
 	WSACleanup();
 

@@ -35,6 +35,7 @@ void SocketHandler::open()
 		fl_alert("Echec connect : %d", WSAGetLastError());
 
 	peer = s;
+	handle_input();
 }
 
 void SocketHandler::set_session(Session* session)
@@ -45,12 +46,9 @@ void SocketHandler::set_session(Session* session)
 	session_ = session;
 }
 
-bool SocketHandler::recv_soft(char* buf, size_t len)
+int SocketHandler::recv_soft(char* buf, size_t len)
 {
-	if (recv(peer, buf, len, NULL) < 0)
-		fl_alert("Erreur recv : %d", WSAGetLastError());
-
-	return true;
+	return recv(peer, buf, len, NULL);
 }
 
 bool SocketHandler::send_soft(char* buf, size_t len)
@@ -67,10 +65,13 @@ bool SocketHandler::send_soft(char* buf, size_t len)
 
 int SocketHandler::handle_input()
 {
-	if (session_ != NULL)
-    {
-        session_->OnRead();
-    }
+	if (session_ == NULL)
+	{
+		fl_alert("No session");
+		return 1;
+	}
+    
+	session_->OnRead();
 
 	return 0;
 }

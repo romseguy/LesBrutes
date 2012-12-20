@@ -24,11 +24,8 @@ int main()
 			handler->wait_client();
 			cout << "Nouveau client" << endl;
 
-			bool end = false;
-			while (!end)
-			{
-				handler->handle_input();
-			}
+			handler->handle_input();
+			system("pause");
 		}
 
 		delete handler;
