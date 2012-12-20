@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SocketHandler.h"
 
-SocketHandler::SocketHandler() : session_(NULL), serveraddress("127.0.0.1")
+SocketHandler::SocketHandler(string ip) : session_(NULL), serveraddress(ip), peer(NULL)
 {
 }
 
@@ -11,10 +11,19 @@ SocketHandler::~SocketHandler()
 
 void SocketHandler::open()
 {
-	SOCKET s = socket (AF_INET, SOCK_STREAM, 0);
+	// Initialisation Winsock prérequis Windows
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	struct protoent *ppe = getprotobyname("tcp");
+
+	if (ppe == NULL)
+		fl_alert("Illegal Protocol :  %d", WSAGetLastError());
+
+	SOCKET s = socket (AF_INET, SOCK_STREAM, ppe->p_proto);
 
 	if (s == INVALID_SOCKET) 
-		fl_alert("Socket invalide. Exception no : %ld", WSAGetLastError());
+		fl_alert("Socket invalide : %d", WSAGetLastError());
 
 	struct sockaddr_in sin;
 	memset (&sin, 0, sizeof(sin));
@@ -23,7 +32,7 @@ void SocketHandler::open()
 	sin.sin_port = htons(5678);
 
 	if (connect (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
-		fl_alert("Echec connect. Exception no : %ld", WSAGetLastError());
+		fl_alert("Echec connect : %d", WSAGetLastError());
 
 	peer = s;
 }
@@ -39,7 +48,19 @@ void SocketHandler::set_session(Session* session)
 bool SocketHandler::recv_soft(char* buf, size_t len)
 {
 	if (recv(peer, buf, len, NULL) < 0)
-		throw exception("Erreur : %d", WSAGetLastError());
+		fl_alert("Erreur recv : %d", WSAGetLastError());
+
+	return true;
+}
+
+bool SocketHandler::send_soft(char* buf, size_t len)
+{
+	int nBytes = send(peer, buf, len, 0);
+
+	if (nBytes == 0)
+		fl_alert("Erreur send : %d", WSAGetLastError());
+
+	fl_alert("Sent : %d bytes", nBytes);
 
 	return true;
 }

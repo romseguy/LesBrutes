@@ -18,10 +18,11 @@ class SocketHandler
 		SocketHandler(void);
 		virtual ~SocketHandler(void);
 
-		SOCKET open(short);
+		void open(short);
 		void set_session(Session* session);
+		void wait_client(void);
 
-		bool recv_soft(char* buf, size_t len);
+		int recv_soft(char* buf, size_t len);
 
 		// Gère les entrées / sorties de la socket
 		int handle_input(void);
@@ -29,6 +30,7 @@ class SocketHandler
 
 	private:
 		SOCKET peer;
+		SOCKET slave;
 		Session* session_;
 };
 

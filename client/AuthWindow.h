@@ -6,9 +6,11 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 	static void but_connexion_cb(Fl_Widget* w, void* data)
 	{
 		((SocketHandler*) data)->open();
+		fl_alert("Connexion ouverte");
 	}
 
 	public:
+
 		AuthWindow(int w, int h, const char* name = 0, SocketHandler* s = NULL) : handler(s), Fl_Window(w, h, name)
 		{
 			// pas besoin de delete ces pointeurs, FLTK s'en charge quand Fl_Window est fermée
@@ -17,11 +19,15 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 				Fl_Secret_Input*    txt_pwd          = new Fl_Secret_Input(150, 100, 100, 25, "Mot de passe");
 				Fl_Button*          but_connexion    = new Fl_Button(150, 140, 100, 25, "Connexion");
 			end();
+			
 			but_connexion->callback(but_connexion_cb, (void*) handler);
 			show();
 		}
 
-		virtual void OnRead(void) {};
+		virtual void OnRead(void) {
+			char* buf = "1";
+			handler->send_soft(buf, 1);
+		};
 
 	private:
 		SocketHandler* handler;

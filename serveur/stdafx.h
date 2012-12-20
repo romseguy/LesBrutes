@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <winsock2.h>
 #include <windows.h>

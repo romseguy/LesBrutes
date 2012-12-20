@@ -52,9 +52,9 @@ void AuthSocket::OnRead()
 
 	while (true)
 	{
-		// on vérifie que les données reçues correspondent à une commande
-		if (!handler->recv_soft((char *) &_cmd, 1))
-			return;
+		// on attend un char (1 octet ou 8 bits)
+		if (handler->recv_soft((char *) &_cmd, 1) != 0)
+			cout << "recu!";
 	}
 }
 

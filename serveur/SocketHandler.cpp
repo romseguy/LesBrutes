@@ -8,9 +8,10 @@ SocketHandler::SocketHandler() : session_(NULL)
 
 SocketHandler::~SocketHandler()
 {
+	closesocket(peer);
 }
 
-SOCKET SocketHandler::open(short service)
+void SocketHandler::open(short service)
 {
 	struct protoent *ppe = getprotobyname("tcp");
 
@@ -35,8 +36,6 @@ SOCKET SocketHandler::open(short service)
 		throw exception ("Listen Error");
 
 	peer = s;
-
-	return s;
 }
 
 void SocketHandler::set_session(Session* session)
@@ -47,12 +46,22 @@ void SocketHandler::set_session(Session* session)
 	session_ = session;
 }
 
-bool SocketHandler::recv_soft(char* buf, size_t len)
+void SocketHandler::wait_client()
 {
-	if (recv(peer, buf, len, NULL) < 0)
-		throw exception("Erreur : %d", WSAGetLastError());
+	slave = accept(peer, NULL, 0);
 
-	return true;
+	if (slave == INVALID_SOCKET)
+		throw exception("Socket client invalide");
+}
+
+int SocketHandler::recv_soft(char* buf, size_t len)
+{
+	int nBytes = recv(slave, buf, len, NULL);
+
+	if (nBytes == SOCKET_ERROR)
+		throw exception("recv");
+
+	return nBytes;
 }
 
 int SocketHandler::handle_input()

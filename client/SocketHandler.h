@@ -15,13 +15,14 @@ class SocketHandler
 				virtual void OnRead(void) = 0; // Classe abstraite
 		};
 
-		SocketHandler(void);
+		SocketHandler(string);
 		virtual ~SocketHandler(void);
 
 		void open(void);
 		void set_session(Session* session);
 
 		bool recv_soft(char* buf, size_t len);
+		bool send_soft(char* buf, size_t len);
 
 		// Gère les entrées / sorties de la socket
 		int handle_input(void);
