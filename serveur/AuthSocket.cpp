@@ -32,11 +32,14 @@ typedef struct AuthHandler
 	bool (AuthSocket::*handler)(void);
 } AuthHandler;
 
+// Initialisation de la structure
 const AuthHandler table[] =
 {
     { AUTH_LOGON_CHALLENGE,     STATUS_CONNECTED, &AuthSocket::HandleLogonChallenge    },
     { AUTH_LOGON_PROOF,         STATUS_CONNECTED, &AuthSocket::HandleLogonProof        }
 };
+
+#define AUTH_TOTAL_COMMANDS 2
 
 AuthSocket::AuthSocket(SocketHandler* _handler) : handler(_handler)
 {
@@ -48,27 +51,44 @@ AuthSocket::~AuthSocket()
 
 void AuthSocket::OnRead()
 {
-	cout << "sending ..." << endl;
+	/*cout << "sending ..." << endl;
 	const char test[5] = "test";
 	int nBytes = handler->send_soft((char*) &test, 5);
-	cout << "Sent : " << nBytes << " bytes" << endl;
+	cout << "Sent : " << nBytes << " bytes" << endl;*/
+
+	/*char test[5];
+	cout << "receiving..." << endl;
+	int nBytes = handler->recv_soft((char*) &test, 5);
+	cout << "Recus : " << test[1] << endl;*/
 	
-	/*char _cmd;
-	while (true)
+	unsigned short _cmd;
+
+	// on attend un short (2 octets ou 16 bits)
+	if (handler->recv_soft((char *) &_cmd, 2) != 0)
 	{
-		// on attend un char (1 octet ou 8 bits)
-		if (handler->recv_soft((char *) &_cmd, 1) != 0)
-			cout << "recu!";
-	}*/
+		_cmd = ntohs(_cmd);
+		cout << "commande recue : " << _cmd << endl;
+
+		size_t i;
+		for (i = 0; i < AUTH_TOTAL_COMMANDS; ++i)
+		{
+			if (table[i].cmd == _cmd)
+			{
+				(*this.*table[i].handler)();
+			}
+		}
+	}
 }
 
 bool AuthSocket::HandleLogonChallenge()
 {
+	cout << "challenge" << endl;
 	//if (handler->recv_len() < sizeof(sAuthLogonChallenge_C))
         return false;
 }
 
 bool AuthSocket::HandleLogonProof()
 {
+	cout << "logon" << endl;
 	return false;
 }

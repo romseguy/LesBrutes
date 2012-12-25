@@ -48,30 +48,30 @@ void SocketHandler::set_session(Session* session)
 
 int SocketHandler::recv_soft(char* buf, size_t len)
 {
-	return recv(peer, buf, len, NULL);
+	int nBytes = recv(peer, buf, len, 0);
+
+	if (nBytes == SOCKET_ERROR)
+		fl_alert("Erreur recv : %d", WSAGetLastError());
+
+	return nBytes;
 }
 
-bool SocketHandler::send_soft(char* buf, size_t len)
+int SocketHandler::send_soft(char* buf, size_t len)
 {
 	int nBytes = send(peer, buf, len, 0);
 
-	if (nBytes == 0)
+	if (nBytes == 0 || nBytes == SOCKET_ERROR)
 		fl_alert("Erreur send : %d", WSAGetLastError());
 
-	fl_alert("Sent : %d bytes", nBytes);
-
-	return true;
+	return nBytes;
 }
 
 int SocketHandler::handle_input()
 {
-	if (session_ == NULL)
-	{
-		fl_alert("No session");
-		return 1;
-	}
-    
-	session_->OnRead();
+	if (session_ != NULL)
+    {
+        session_->OnRead();
+    }
 
 	return 0;
 }

@@ -56,7 +56,7 @@ void SocketHandler::wait_client()
 
 int SocketHandler::recv_soft(char* buf, size_t len)
 {
-	int nBytes = recv(slave, buf, len, NULL);
+	int nBytes = recv(slave, buf, len, 0);
 
 	if (nBytes == SOCKET_ERROR)
 		throw exception("recv");
@@ -68,8 +68,8 @@ int SocketHandler::send_soft(char* buf, size_t len)
 {
 	int nBytes = send(slave, buf, len, 0);
 
-	if (nBytes == 0)
-		throw exception("Erreur send : %d", WSAGetLastError());
+	if (nBytes == 0 || nBytes == SOCKET_ERROR)
+		throw exception("send");
 
 	return nBytes;
 }
