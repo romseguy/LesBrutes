@@ -24,7 +24,4 @@
 #include <winsock2.h>
 #include <windows.h>
 
-using std::string;
-using std::exception;
-using std::cout;
-using std::endl;
+using namespace std;

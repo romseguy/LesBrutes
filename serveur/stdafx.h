@@ -11,13 +11,11 @@
 #include <tchar.h>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include <winsock2.h>
 #include <windows.h>
 
-using std::string;
-using std::exception;
-using std::cout;
-using std::endl;
+using namespace std;

@@ -23,19 +23,9 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 			show();
 		}
 
-		virtual void OnRead(void)
-		{
-			/*char test[5];
-			int nBytes = handler->recv_soft((char*) &test, 5);
-			fl_alert("%c recus", test[1]);*/
-			
-			/*const char test[5] = "test";
-			int nBytes = handler->send_soft((char*) &test, 5);
-			fl_alert("%d bytes sent", nBytes);*/
+		virtual ~AuthWindow() { if (handler) delete handler; }
 
-			unsigned short cmd_ = htons(1);
-			int nBytes = handler->send_soft((char*) &cmd_, 2);
-		}
+		virtual void OnRead(void);
 
 	private:
 		SocketHandler* handler;

@@ -7,6 +7,10 @@ SocketHandler::SocketHandler(string ip) : session_(NULL), serveraddress(ip), pee
 
 SocketHandler::~SocketHandler()
 {
+	closesocket(peer);
+
+	if (session_)
+		delete session_;
 }
 
 void SocketHandler::open()

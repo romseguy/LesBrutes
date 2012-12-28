@@ -2,13 +2,17 @@
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
-SocketHandler::SocketHandler() : session_(NULL)
+SocketHandler::SocketHandler() : session_(NULL), peer(NULL), slave(NULL)
 {
 }
 
 SocketHandler::~SocketHandler()
 {
 	closesocket(peer);
+	closesocket(slave);
+
+	if (session_)
+		delete session_;
 }
 
 void SocketHandler::open(short service)

@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AuthWindow.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SocketHandler.cpp" />
     <ClCompile Include="stdafx.cpp">

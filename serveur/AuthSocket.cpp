@@ -3,6 +3,14 @@
 #include "AuthSocket.h"
 #include "AuthCodes.h"
 
+// Messages
+typedef struct AUTH_LOGON_CHALLENGE_C
+{
+	unsigned long        ip;
+	char                 login[20];
+	char                 pwd[20];
+} sAuthLogonChallenge_C;
+
 enum eStatus
 {
     STATUS_CONNECTED = 0,
@@ -15,14 +23,6 @@ enum eAuthCmd
 	AUTH_LOGON_CHALLENGE           = 0x00,
 	AUTH_LOGON_PROOF               = 0x01
 };
-
-// Messages
-typedef struct AUTH_LOGON_CHALLENGE_C
-{
-	char                 cmd;
-	char                 error;
-	unsigned long        ip;
-} sAuthLogonChallenge_C;
 
 // Structure de lien entre une commande et une fonction
 typedef struct AuthHandler
@@ -45,22 +45,8 @@ AuthSocket::AuthSocket(SocketHandler* _handler) : handler(_handler)
 {
 }
 
-AuthSocket::~AuthSocket()
-{
-}
-
 void AuthSocket::OnRead()
 {
-	/*cout << "sending ..." << endl;
-	const char test[5] = "test";
-	int nBytes = handler->send_soft((char*) &test, 5);
-	cout << "Sent : " << nBytes << " bytes" << endl;*/
-
-	/*char test[5];
-	cout << "receiving..." << endl;
-	int nBytes = handler->recv_soft((char*) &test, 5);
-	cout << "Recus : " << test[1] << endl;*/
-	
 	unsigned short _cmd;
 
 	// on attend un short (2 octets ou 16 bits)
@@ -79,7 +65,12 @@ void AuthSocket::OnRead()
 		}
 
 		if (i == AUTH_TOTAL_COMMANDS)
-			throw exception("Commande inconnue");
+		{
+			stringstream ss;
+			ss << "Commande ";
+			ss << _cmd;
+			ss << " inconnue";
+		}
 	}
 }
 
@@ -87,8 +78,17 @@ bool AuthSocket::HandleLogonChallenge()
 {
 	cout << "challenge" << endl;
 
-	//if (handler->recv_len() < sizeof(sAuthLogonChallenge_C))
-        return false;
+	vector<unsigned char> buffer;
+	buffer.resize(sizeof(sAuthLogonChallenge_C));
+
+	handler->recv_soft((char*) buffer.data(), sizeof(sAuthLogonChallenge_C));
+
+	sAuthLogonChallenge_C* pkt = (sAuthLogonChallenge_C*) &buffer[0];
+	cout << "ip:" << ntohs(pkt->ip) << endl;
+	cout << "login:" << pkt->login << endl;
+	cout << "pwd:" << pkt->pwd << endl;
+
+	return false;
 }
 
 bool AuthSocket::HandleLogonProof()
