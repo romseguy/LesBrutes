@@ -46,7 +46,7 @@ void SocketHandler::set_session(Session* session)
 	session_ = session;
 }
 
-int SocketHandler::recv_soft(char* buf, size_t len)
+size_t SocketHandler::recv_soft(char* buf, size_t len)
 {
 	int nBytes = recv(peer, buf, len, 0);
 
@@ -56,7 +56,7 @@ int SocketHandler::recv_soft(char* buf, size_t len)
 	return nBytes;
 }
 
-int SocketHandler::send_soft(char* buf, size_t len)
+size_t SocketHandler::send_soft(char* buf, size_t len)
 {
 	int nBytes = send(peer, buf, len, 0);
 

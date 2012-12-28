@@ -21,8 +21,8 @@ class SocketHandler
 		void open(void);
 		void set_session(Session* session);
 
-		int recv_soft(char* buf, size_t len);
-		int send_soft(char* buf, size_t len);
+		size_t recv_soft(char* buf, size_t len);
+		size_t send_soft(char* buf, size_t len);
 
 		// Gère les entrées / sorties de la socket
 		int handle_input(void);

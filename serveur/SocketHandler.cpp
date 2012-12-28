@@ -54,7 +54,7 @@ void SocketHandler::wait_client()
 		throw exception("Socket client invalide");
 }
 
-int SocketHandler::recv_soft(char* buf, size_t len)
+size_t SocketHandler::recv_soft(char* buf, size_t len)
 {
 	int nBytes = recv(slave, buf, len, 0);
 
@@ -64,7 +64,7 @@ int SocketHandler::recv_soft(char* buf, size_t len)
 	return nBytes;
 }
 
-int SocketHandler::send_soft(char* buf, size_t len)
+size_t SocketHandler::send_soft(char* buf, size_t len)
 {
 	int nBytes = send(slave, buf, len, 0);
 

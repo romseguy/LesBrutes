@@ -77,12 +77,16 @@ void AuthSocket::OnRead()
 				(*this.*table[i].handler)();
 			}
 		}
+
+		if (i == AUTH_TOTAL_COMMANDS)
+			throw exception("Commande inconnue");
 	}
 }
 
 bool AuthSocket::HandleLogonChallenge()
 {
 	cout << "challenge" << endl;
+
 	//if (handler->recv_len() < sizeof(sAuthLogonChallenge_C))
         return false;
 }
