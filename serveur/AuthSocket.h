@@ -3,8 +3,8 @@
 
 class AuthSocket : public SocketHandler::Session
 {
-	public: 
-		AuthSocket(SocketHandler*);
+	public:
+		AuthSocket(SocketHandler* _handler) : handler(_handler) {};
 		virtual ~AuthSocket() { if (handler) delete handler; }
 
 		virtual void OnRead(void);

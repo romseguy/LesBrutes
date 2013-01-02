@@ -2,24 +2,30 @@
 #include "SocketHandler.h"
 #include "AuthWindow.h"
 
-// Messages
-typedef struct AUTH_LOGON_CHALLENGE
+// Commandes
+enum eAuthCmd
 {
-	unsigned long        ip;
-	char                 login[20];
-	char                 pwd[20];
-} sAuthLogonChallenge;
+	AUTH_LOGON_CHALLENGE           = 0x00,
+	AUTH_LOGON_PROOF               = 0x01
+};
+
+// Messages
+typedef struct AUTH_LOGON_CHALLENGE_C
+{
+	unsigned char        cmd;
+	unsigned char        login[20];
+	unsigned char        pwd[20];
+} sAuthLogonChallenge_C;
 
 void AuthWindow::OnRead()
 {
-	unsigned short cmd_ = htons(0);
-	handler->send_soft((char*) &cmd_, 2);
+	unsigned char cmd = AUTH_LOGON_CHALLENGE;
+	handler->send_soft((char*) &cmd, 1);
 
-	struct AUTH_LOGON_CHALLENGE login_packet;
-	memset (&login_packet, 0, sizeof(login_packet));
-	login_packet.ip = htons(127);
-	strcpy(login_packet.login, "test");
-	strcpy(login_packet.pwd, "123");
+	sAuthLogonChallenge_C login_packet;
+	login_packet.cmd = AUTH_LOGON_CHALLENGE;
+	memcpy(login_packet.login, "test", 20);
+	memcpy(login_packet.pwd, "123", 20);
 
-	handler->send_soft((char*) &login_packet, sizeof(sAuthLogonChallenge));
+	handler->send_soft((char*) &login_packet, sizeof(login_packet));
 }
