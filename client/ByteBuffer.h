@@ -23,111 +23,10 @@ class ByteBuffer
             return *this;
         }
 
-		// unsigned
-        ByteBuffer &operator<<(unsigned short value)
-        {
-            append<unsigned short>(value);
-            return *this;
-        }
-
-        ByteBuffer &operator<<(unsigned int value)
-        {
-            append<unsigned int>(value);
-            return *this;
-        }
-
-        ByteBuffer &operator<<(unsigned long value)
-        {
-            append<unsigned long>(value);
-            return *this;
-        }
-
-		// signed
-        ByteBuffer &operator<<(short value)
-        {
-            append<short>(value);
-            return *this;
-        }
-
-        ByteBuffer &operator<<(int value)
-        {
-            append<long>(value);
-            return *this;
-        }
-
-        ByteBuffer &operator<<(long value)
-        {
-            append<long>(value);
-            return *this;
-		}
-		
-		// Chaînes de caractères
-        ByteBuffer &operator<<(const string &value)
-        {
-            if (size_t len = value.length())
-                append((byte const*)value.c_str(), len);
-
-            append((byte)0);
-            return *this;
-        }
-
-        ByteBuffer &operator<<(const char *str)
-        {
-            if (size_t len = (str ? strlen(str) : 0))
-                append((byte const*)str, len);
-
-            append((byte)0);
-            return *this;
-        }
-
-		// Operateur >> bool, byte, short, int, long
-        ByteBuffer &operator>>(bool &value)
-        {
-            value = read<char>() > 0 ? true : false;
-            return *this;
-        }
-
-        ByteBuffer &operator>>(byte &value)
+		// Operateur >> byte,short,int,long
+		ByteBuffer &operator>>(byte &value)
         {
             value = read<byte>();
-            return *this;
-        }
-
-		// unsigned
-        ByteBuffer &operator>>(unsigned short &value)
-        {
-            value = read<unsigned short>();
-            return *this;
-        }
-
-        ByteBuffer &operator>>(unsigned int &value)
-        {
-            value = read<unsigned int>();
-            return *this;
-        }
-
-        ByteBuffer &operator>>(unsigned long &value)
-        {
-            value = read<unsigned long>();
-            return *this;
-        }
-
-		// signed
-        ByteBuffer &operator>>(short &value)
-        {
-            value = read<short>();
-            return *this;
-        }
-
-        ByteBuffer &operator>>(int &value)
-        {
-            value = read<int>();
-            return *this;
-        }
-
-        ByteBuffer &operator>>(long &value)
-        {
-            value = read<long>();
             return *this;
         }
 
@@ -150,11 +49,6 @@ class ByteBuffer
             return *this;
         }
 
-        byte operator[](size_t pos) const
-        {
-            return read<byte>(pos);
-        }
-
 		// Accesseurs _rpos _wpos
 		size_t rpos() const { return _rpos; }
 		size_t wpos() const { return _wpos; }
@@ -166,68 +60,11 @@ class ByteBuffer
         size_t size() const { return storage.size(); }
         bool empty() const { return storage.empty(); }
 
-        void resize(size_t newsize)
-        {
-            storage.resize(newsize, 0);
-            _rpos = 0;
-            _wpos = size();
-        }
-
-        void reserve(size_t ressize)
-        {
-            if (ressize > size())
-                storage.reserve(ressize);
-        }
-
-        void clear()
-        {
-            storage.clear();
-            _rpos = _wpos = 0;
-        }
-
-		// IO templates
+		// Ecriture
         template <typename T> void append(T value)
         {
             EndianConvert(value);
             append((byte *)&value, sizeof(value));
-        }
-
-        template <typename T> void put(size_t pos, T value)
-        {
-            EndianConvert(value);
-            put(pos, (byte *)&value, sizeof(value));
-        }
-
-		template <typename T> T read()
-        {
-            T r = read<T>(_rpos);
-            _rpos += sizeof(T);
-
-            return r;
-        }
-
-        template <typename T> T read(size_t pos) const
-        {
-            if (pos + sizeof(T) > size())
-                throw exception("read(pos) : depassement buffer");
-
-            T val = *((T const*)&storage[pos]);
-            EndianConvert(val);
-
-            return val;
-        }
-
-		template<typename T> void read_skip()
-		{
-			read_skip(sizeof(T));
-		}
-
-        void read_skip(size_t skip)
-        {
-            if (_rpos + skip > size())
-                throw exception("read_skip : depassement buffer");
-
-            _rpos += skip;
         }
 
 		// Ecriture : pointeur d'octets
@@ -250,40 +87,26 @@ class ByteBuffer
             _wpos += cnt;
         }
 
-		// Ecriture : pointeur char
-		void append(const char* src, size_t cnt)
+		// Lecture
+		template <typename T> T read()
         {
-            return append((const byte *)src, cnt);
+            T r = read<T>(_rpos);
+            _rpos += sizeof(T);
+
+            return r;
         }
 
-		// Ecriture : Autre ByteBuffer
-		void append(const ByteBuffer& buffer)
+		// Lecture : position
+        template <typename T> T read(size_t pos) const
         {
-            if (buffer.wpos())
-                append(buffer.contents(), buffer.wpos());
+            if (pos + sizeof(T) > size())
+                throw exception("read(pos) : depassement buffer");
+
+            T val = *((T const*)&storage[pos]);
+            EndianConvert(val);
+
+            return val;
         }
-
-		// Ecriture positionnée ; pointeur d'octets
-        void put(size_t pos, const byte *src, size_t cnt)
-        {
-            if (pos + cnt > size())
-                throw exception("put : depassement buffer");
-
-            if (!src)
-                throw exception("put : src manquant");
-
-            memcpy(&storage[pos], src, cnt);
-        }
-
-		// Lecture position courante _rpos dans *dest
-        void read(byte *dest, size_t len)
-        {
-            if (_rpos  + len > size())
-               throw exception("read : depassement buffer");
-
-            memcpy(dest, &storage[_rpos], len);
-            _rpos += len;
-		}
 
     private:
         size_t _rpos, _wpos;
