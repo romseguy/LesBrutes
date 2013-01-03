@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SocketHandler.h"
 #include "AuthWindow.h"
+#include "ByteBuffer.h"
 
 // Commandes
 enum eAuthCmd
@@ -12,20 +13,20 @@ enum eAuthCmd
 // Messages
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
-	unsigned char        cmd;
-	unsigned char        login[20];
-	unsigned char        pwd[20];
+	byte        cmd;
+	byte        login[20];
+	byte        pwd[20];
 } sAuthLogonChallenge_C;
 
 void AuthWindow::OnRead()
 {
-	unsigned char cmd = AUTH_LOGON_CHALLENGE;
+	byte cmd = AUTH_LOGON_CHALLENGE;
 	handler->send_soft((char*) &cmd, 1);
+	
+	ByteBuffer packet;
+	packet << cmd;
+/*	packet << string("test");
+	packet << string("123");*
 
-	sAuthLogonChallenge_C login_packet;
-	login_packet.cmd = AUTH_LOGON_CHALLENGE;
-	memcpy(login_packet.login, "test", 20);
-	memcpy(login_packet.pwd, "123", 20);
-
-	handler->send_soft((char*) &login_packet, sizeof(login_packet));
+	handler->send_soft((char*) packet.contents(), packet.size());*/
 }

@@ -77,7 +77,7 @@ bool AuthSocket::HandleLogonChallenge()
 
 	handler->recv_soft((char*) buffer.data(), sizeof(sAuthLogonChallenge_C));
 
-	// On se sert de la structure définit plus haut pour lire le buffer facilement
+	// On se sert de la structure définit plus haut pour cast et lire le buffer
 	sAuthLogonChallenge_C* pkt = (sAuthLogonChallenge_C*) &buffer[0];
 	cout << "login:" << pkt->login << endl;
 	cout << "pwd:" << pkt->pwd << endl;

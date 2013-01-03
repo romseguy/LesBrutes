@@ -8,10 +8,12 @@
 #include "targetver.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <tchar.h>
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <FL/Fl.h>
 #include <FL/Fl_Widget.h>
@@ -24,4 +26,6 @@
 #include <winsock2.h>
 #include <windows.h>
 
+#include "ByteConverter.h"
 using namespace std;
+typedef unsigned char byte;
