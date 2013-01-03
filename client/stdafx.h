@@ -27,5 +27,5 @@
 #include <windows.h>
 
 #include "ByteConverter.h"
-using namespace std;
+
 typedef unsigned char byte;

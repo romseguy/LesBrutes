@@ -1,4 +1,6 @@
 #include "stdafx.h"
+using namespace std;
+
 #include "Sockethandler.h"
 #include "AuthSocket.h"
 
