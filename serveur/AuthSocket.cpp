@@ -37,7 +37,7 @@ typedef struct AuthHandler
 const AuthHandler table[] =
 {
 	{ AUTH_LOGON_CHALLENGE,     STATUS_CONNECTED, &AuthSocket::HandleLogonChallenge    },
-    { AUTH_LOGON_PROOF,         STATUS_CONNECTED, &AuthSocket::HandleLogonProof        }
+	{ AUTH_LOGON_PROOF,         STATUS_CONNECTED, &AuthSocket::HandleLogonProof        }
 };
 
 #define AUTH_TOTAL_COMMANDS 2
