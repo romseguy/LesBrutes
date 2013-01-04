@@ -14,9 +14,10 @@ enum eAuthCmd
 // Messages
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
-	byte        cmd;
-	byte        login[20];
-	byte        pwd[20];
+	byte                          cmd;
+	byte                          error;
+	unsigned short                size;
+	char                          login[20];
 } sAuthLogonChallenge_C;
 
 void AuthWindow::OnRead()
@@ -26,8 +27,12 @@ void AuthWindow::OnRead()
 	
 	ByteBuffer packet;
 	packet << cmd;
-/*	packet << string("test");
-	packet << string("123");*
+	packet << byte(0);
+	packet << unsigned short(21);
 
-	handler->send_soft((char*) packet.contents(), packet.size());*/
+	string l = "test";
+	l.resize(20);
+	packet << l;
+
+	handler->send_soft((char*) packet.contents(), packet.size());
 }

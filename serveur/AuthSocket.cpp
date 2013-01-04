@@ -3,6 +3,7 @@ using namespace std;
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 #include "AuthCodes.h"
+#include "ByteBuffer.h"
 
 // Etat du client
 enum eStatus
@@ -21,9 +22,10 @@ enum eAuthCmd
 // Messages
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
-	unsigned char                 cmd;
-	unsigned char                 login[20];
-	unsigned char                 pwd[20];
+	byte                          cmd;
+	byte                          error;
+	unsigned short                size;
+	char                          login[20];
 } sAuthLogonChallenge_C;
 
 // Structure de lien entre une commande et une fonction
@@ -45,9 +47,8 @@ const AuthHandler table[] =
 
 void AuthSocket::OnRead()
 {
-	unsigned char cmd;
+	byte cmd;
 
-	// On attend un char (1 octet ou 8 bits)
 	if (handler->recv_soft((char *) &cmd, 1) != 0)
 	{
 		size_t i;
@@ -56,7 +57,8 @@ void AuthSocket::OnRead()
 			if (table[i].cmd == cmd)
 			{
 				// On appele la fonction correspondante à la commande donnée
-				(*this.*table[i].cmd_handler)();
+				if ((*this.*table[i].cmd_handler)())
+					cout << "Commande executee" << endl;
 			}
 		}
 
@@ -72,16 +74,27 @@ bool AuthSocket::HandleLogonChallenge()
 {
 	cout << "challenge" << endl;
 
-	// On crée le buffer qui va recevoir les octets associés à la commande
-	vector<unsigned char> buffer;
-	buffer.resize(sizeof(sAuthLogonChallenge_C));
+	// On crée le buffer qui va recevoir les 4 premier octets
+	ByteBuffer buf;
+	buf.resize(4);
+	handler->recv_soft((char*) buf.contents(), 4);
 
-	handler->recv_soft((char*) buffer.data(), sizeof(sAuthLogonChallenge_C));
+	// décalage de 2 bits pour recuperer le nombre d'octets restant
+	unsigned short restant;
+	buf.rpos(2);
+	buf >> restant;
+	cout << restant << " octets restant" << endl;
 
-	// On se sert de la structure définit plus haut pour cast et lire le buffer
-	sAuthLogonChallenge_C* pkt = (sAuthLogonChallenge_C*) &buffer[0];
-	cout << "login:" << pkt->login << endl;
-	cout << "pwd:" << pkt->pwd << endl;
+	if (restant < sizeof(sAuthLogonChallenge_C) - buf.size())
+		return false;
+
+	buf.resize(restant + buf.size());
+	int nBytes = handler->recv_soft((char*) buf.contents(4), restant);
+	cout << nBytes << " octets recus" << endl;
+
+	string l;
+	buf >> l;
+	cout << l << " recu" << endl;
 
 	return true;
 }

@@ -80,7 +80,6 @@ class ByteBuffer
 			return *this;
 		}
 
-
 		// Operateur >> byte,short,int,long
 		ByteBuffer &operator>>(byte &value)
 		{
