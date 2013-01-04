@@ -31,7 +31,7 @@ void AuthWindow::OnRead()
 	packet << unsigned short(21);
 
 	string l = "test";
-	l.resize(20);
+	l.resize(20, ' ');
 	packet << l;
 
 	handler->send_soft((char*) packet.contents(), packet.size());

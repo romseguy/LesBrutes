@@ -79,7 +79,7 @@ bool AuthSocket::HandleLogonChallenge()
 	buf.resize(4);
 	handler->recv_soft((char*) buf.contents(), 4);
 
-	// décalage de 2 bits pour recuperer le nombre d'octets restant
+	// décalage de 2 octets pour recuperer le nombre d'octets restant
 	unsigned short restant;
 	buf.rpos(2);
 	buf >> restant;
@@ -88,13 +88,16 @@ bool AuthSocket::HandleLogonChallenge()
 	if (restant < sizeof(sAuthLogonChallenge_C) - buf.size())
 		return false;
 
+	// rpos est remis à 0 avec le resize
 	buf.resize(restant + buf.size());
 	int nBytes = handler->recv_soft((char*) buf.contents(4), restant);
 	cout << nBytes << " octets recus" << endl;
 
+	// décalage de 4 octets pour récupérer le login
 	string l;
+	buf.rpos(4);
 	buf >> l;
-	cout << l << " recu" << endl;
+	cout << l << " (login)" << endl;
 
 	return true;
 }
