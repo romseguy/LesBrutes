@@ -40,7 +40,6 @@ void SocketHandler::open()
 		fl_alert("Echec connect : %d", WSAGetLastError());
 
 	peer = s;
-	handle_input();
 }
 
 void SocketHandler::set_session(Session* session)

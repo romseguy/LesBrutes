@@ -6,6 +6,7 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 	static void but_connexion_cb(Fl_Widget* w, void* data)
 	{
 		((SocketHandler*) data)->open();
+		((SocketHandler*) data)->handle_input();
 	}
 
 	public:
