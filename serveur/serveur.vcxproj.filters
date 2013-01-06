@@ -36,6 +36,12 @@
     <ClInclude Include="ByteConverter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="sqlite3.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSQLite3.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +54,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SocketHandler.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSQLite3.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

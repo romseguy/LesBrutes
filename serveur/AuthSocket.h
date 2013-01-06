@@ -11,6 +11,7 @@ class AuthSocket : public SocketHandler::Session
 
 		bool HandleLogonChallenge();
 		bool HandleLogonProof();
+		bool HandleCreateUser();
 
 	private:
 		SocketHandler* handler;
