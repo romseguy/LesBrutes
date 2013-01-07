@@ -4,7 +4,7 @@
 class AuthSocket : public SocketHandler::Session
 {
 	public:
-		AuthSocket(SocketHandler* _handler) : handler(_handler) {};
+		AuthSocket(SocketHandler* _handler) : handler(_handler) { authed = false; };
 		virtual ~AuthSocket() { if (handler) delete handler; }
 
 		virtual void OnRead(void);
@@ -15,6 +15,7 @@ class AuthSocket : public SocketHandler::Session
 
 	private:
 		SocketHandler* handler;
+		bool authed;
 };
 
 #endif

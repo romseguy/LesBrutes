@@ -16,33 +16,22 @@ enum eAuthCmd
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
 	byte                          cmd;
-	byte                          error;
 	unsigned short                size;
-	char                          login[20];
-	char                          pwd[20];
+	char                          login;
+	char                          pwd;
 } sAuthLogonChallenge_C;
 
 void AuthWindow::OnRead()
-{
-	// commande serveur
-	byte cmd = AUTH_LOGON_CHALLENGE;
-	handler->send_soft((char*) &cmd, 1);
-	
+{	
+	const char* login = txt_login->value();
+	const char* pwd = txt_pwd->value();
+
 	ByteBuffer packet;
-	// en tete
-	packet << cmd;
-	packet << byte(0);
-	packet << unsigned short(sizeof(txt_login->value())+sizeof(txt_pwd->value()));
+	packet << byte(AUTH_LOGON_CHALLENGE);
+	packet << unsigned short(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
 
-	// login
-	string l(txt_login->value());
-	//l.resize(19, ' '); // \0 est rajouté
-	packet << l;
-
-	// mot de passe
-	string p(txt_pwd->value());
-	//p.resize(19, ' ');
-	packet << p;
+	packet << login;
+	packet << pwd;
 
 	int nBytes = handler->send_soft((char*) packet.contents(), packet.size());
 	fl_alert("%d octets envoyes", nBytes);

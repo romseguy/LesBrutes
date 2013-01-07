@@ -26,10 +26,9 @@ enum eAuthCmd
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
 	byte                          cmd;
-	byte                          error;
 	unsigned short                size;
-	char                          login[20];
-	char                          pwd[20];
+	char                          login;
+	char                          pwd;
 } sAuthLogonChallenge_C;
 
 // Structure de lien entre une commande et une fonction
@@ -77,28 +76,22 @@ void AuthSocket::OnRead()
 bool AuthSocket::HandleLogonChallenge()
 {
 	cout << "challenge" << endl;
-
-	// On crée le buffer qui va recevoir les 4 premier octets
 	ByteBuffer buf;
-	buf.resize(4);
-	handler->recv_soft((char*) buf.contents(), 4);
 
-	// décalage de 2 octets pour recuperer le nombre d'octets restant
+	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
+	buf.resize(2);
+	handler->recv_soft((char*) buf.contents(), 2);
+
 	unsigned short restant;
-	buf.rpos(2);
 	buf >> restant;
 
-	// pour être sur qu'on ne s'arrete pas avant d'avoir tout reçu
-	if (sizeof(sAuthLogonChallenge_C) - buf.size() > restant)
-		return false;
-
-	// rpos est remis à 0 avec le resize
+	// on recupère le restant des données
 	buf.resize(restant + buf.size());
-	int nBytes = handler->recv_soft((char*) buf.contents(4), restant);
+	handler->recv_soft((char*) buf.contents(2), restant);
 
-	// décalage de 4 octets pour récupérer le login
+	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	string l;
-	buf.rpos(4);
+	buf.rpos(2);
 	buf >> l;
 	cout << l << " (login)" << endl;
 
