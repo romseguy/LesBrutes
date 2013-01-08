@@ -1,11 +1,12 @@
 #include "stdafx.h"
 
 using namespace std;
+
 #include "SocketHandler.h"
 #include "AuthWindow.h"
 #include "ByteBuffer.h"
 
-// Commandes
+// Discriminant
 enum eAuthCmd
 {
 	AUTH_LOGON_CHALLENGE           = 0x00,

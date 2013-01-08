@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 using namespace std;
+
 #include "SocketHandler.h"
 
 SocketHandler::SocketHandler(string ip) : session_(NULL), serveraddress(ip), peer(NULL)

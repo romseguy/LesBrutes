@@ -3,3 +3,4 @@ Debug
 serveur/Debug
 ipch
 *.sdf
+*.suo

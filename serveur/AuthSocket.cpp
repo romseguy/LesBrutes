@@ -14,7 +14,7 @@ enum eStatus
 	STATUS_AUTHED
 };
 
-// Commandes
+// Discriminant
 enum eAuthCmd
 {
 	AUTH_LOGON_CHALLENGE           = 0x00,

@@ -216,7 +216,7 @@ class ByteBuffer
 			if (pos + sizeof(T) > size())
 				throw exception("read(pos) : depassement buffer");
 
-			T val = *((T const*)&storage[pos]);
+			T val = *((T const*) &storage[pos]);
 			EndianConvert(val);
 
 			return val;
