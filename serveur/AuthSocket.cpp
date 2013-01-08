@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-using namespace std;
-
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 #include "AuthCodes.h"
@@ -62,20 +60,20 @@ void AuthSocket::OnRead()
 			{
 				// On appele la fonction correspondante à la commande donnée
 				if ((*this.*table[i].cmd_handler)())
-					cout << "Commande executee" << endl;
+					std::cout << "Commande executee" << std::endl;
 				else
-					cout << "Commande echec" << endl;
+					std::cout << "Commande echec" << std::endl;
 			}
 		}
 
 		if (i == AUTH_TOTAL_COMMANDS)
-			cout << "Commande inconnue" << endl;
+			std::cout << "Commande inconnue" << std::endl;
 	}
 }
 
 bool AuthSocket::HandleLogonChallenge()
 {
-	cout << "challenge" << endl;
+	std::cout << "challenge" << std::endl;
 	ByteBuffer buf;
 
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
@@ -90,28 +88,28 @@ bool AuthSocket::HandleLogonChallenge()
 	handler->recv_soft((char*) buf.contents(2), restant);
 
 	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
-	string l;
+	std::string l;
 	buf.rpos(2);
 	buf >> l;
-	cout << l << " (login)" << endl;
+	std::cout << l << " (login)" << std::endl;
 
 	// mot de passe
-	string p;
+	std::string p;
 	buf >> p;
-	cout << p << " (pwd)" << endl;
+	std::cout << p << " (pwd)" << std::endl;
 
 	return true;
 }
 
 bool AuthSocket::HandleLogonProof()
 {
-	cout << "logon" << endl;
+	std::cout << "logon" << std::endl;
 	return false;
 }
 
 bool AuthSocket::HandleCreateUser()
 {
-	cout << "register" << endl;
+	std::cout << "register" << std::endl;
 
 	// ("INSERT INTO user VALUES('test', '123');");
    

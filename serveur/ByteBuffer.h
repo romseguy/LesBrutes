@@ -62,7 +62,7 @@ class ByteBuffer
 		}
 
 		// Chaînes de caractères
-		ByteBuffer &operator<<(const string &value)
+		ByteBuffer &operator<<(const std::string &value)
 		{
 			if (size_t len = value.length())
 				append((byte const*)value.c_str(), len);
@@ -126,7 +126,7 @@ class ByteBuffer
 		}
 
 		// Chaînes de caractères
-		ByteBuffer &operator>>(string &value)
+		ByteBuffer &operator>>(std::string &value)
 		{
 			value.clear();
 
@@ -179,13 +179,13 @@ class ByteBuffer
 		void append(const byte *src, size_t cnt)
 		{
 			if (!cnt)
-				throw exception("append : cnt manquant");
+				throw std::exception("append : cnt manquant");
 
 			if (!src)
-				throw exception("append : src manquant");
+				throw std::exception("append : src manquant");
 
 			if (size() > MAX_SIZE)
-				throw exception("append : depassement size");
+				throw std::exception("append : depassement size");
 
 			// On aggrandit le vecteur si nécessaire
 			if (storage.size() < _wpos + cnt)
@@ -214,7 +214,7 @@ class ByteBuffer
 		template <typename T> T read(size_t pos) const
 		{
 			if (pos + sizeof(T) > size())
-				throw exception("read(pos) : depassement buffer");
+				throw std::exception("read(pos) : depassement buffer");
 
 			T val = *((T const*) &storage[pos]);
 			EndianConvert(val);
@@ -224,7 +224,7 @@ class ByteBuffer
 
 	private:
 		size_t _rpos, _wpos;
-		vector<byte> storage;
+		std::vector<byte> storage;
 };
 
 #endif

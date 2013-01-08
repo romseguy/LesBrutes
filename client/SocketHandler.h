@@ -15,7 +15,7 @@ class SocketHandler
 				virtual void OnRead(void) = 0; // Classe abstraite
 		};
 
-		SocketHandler(string);
+		SocketHandler(std::string);
 		virtual ~SocketHandler(void);
 
 		void open(void);
@@ -29,7 +29,7 @@ class SocketHandler
 		int handle_output(void);
 
 	private:
-		string serveraddress;
+		std::string serveraddress;
 		SOCKET peer;
 		Session* session_;
 };

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-using namespace std;
-
 #include "Sockethandler.h"
 #include "AuthSocket.h"
 
@@ -20,22 +18,22 @@ int main()
 	{
 		handler->open(5678);
 		handler->set_session(new AuthSocket(handler));
-		cout << "Serveur ON" << endl;
+		std::cout << "Serveur ON" << std::endl;
 
 		while (!stopEvent)
 		{
-			cout << "Attente client" << endl;
+			std::cout << "Attente client" << std::endl;
 			handler->wait_client();
-			cout << "Nouveau client" << endl;
+			std::cout << "Nouveau client" << std::endl;
 
 			handler->handle_input();
 			system("pause");
 		}
 	}
-	catch (exception e)
+	catch (std::exception e)
 	{
-		cout << "SOCKET ERROR : " << e.what() << endl;
-		cout << "WSA ERROR : " << WSAGetLastError() << endl;
+		std::cout << "SOCKET ERROR : " << e.what() << std::endl;
+		std::cout << "WSA ERROR : " << WSAGetLastError() << std::endl;
 		system("pause");
 
 		delete handler;

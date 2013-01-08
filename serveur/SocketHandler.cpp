@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-using namespace std;
-
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
@@ -23,12 +21,12 @@ void SocketHandler::open(short service)
 	struct protoent *ppe = getprotobyname("tcp");
 
 	if (ppe == NULL)
-		throw exception ("Illegal Protocol");
+		throw std::exception ("Illegal Protocol");
 
 	SOCKET s = socket (AF_INET, SOCK_STREAM, ppe->p_proto);
 
 	if (s == INVALID_SOCKET)
-		throw exception ("Invalid Socket");
+		throw std::exception ("Invalid Socket");
 
 	struct sockaddr_in sin;
 	memset (&sin, 0, sizeof(sin));
@@ -37,10 +35,10 @@ void SocketHandler::open(short service)
 	sin.sin_port = htons (service);
 
 	if (bind (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
-		throw exception ("Bind Error");
+		throw std::exception ("Bind Error");
    
 	if (listen (s, 5) == SOCKET_ERROR)
-		throw exception ("Listen Error");
+		throw std::exception ("Listen Error");
 
 	peer = s;
 }
@@ -58,7 +56,7 @@ void SocketHandler::wait_client()
 	slave = accept(peer, NULL, 0);
 
 	if (slave == INVALID_SOCKET)
-		throw exception("Socket client invalide");
+		throw std::exception("Socket client invalide");
 }
 
 size_t SocketHandler::recv_soft(char* buf, size_t len)
@@ -66,7 +64,7 @@ size_t SocketHandler::recv_soft(char* buf, size_t len)
 	int nBytes = recv(slave, buf, len, 0);
 
 	if (nBytes == SOCKET_ERROR)
-		throw exception("recv");
+		throw std::exception("recv");
 
 	return nBytes;
 }
@@ -76,7 +74,7 @@ size_t SocketHandler::send_soft(char* buf, size_t len)
 	int nBytes = send(slave, buf, len, 0);
 
 	if (nBytes == 0 || nBytes == SOCKET_ERROR)
-		throw exception("send");
+		throw std::exception("send");
 
 	return nBytes;
 }
