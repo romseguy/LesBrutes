@@ -5,47 +5,58 @@
 #include "AuthCodes.h"
 #include "ByteBuffer.h"
 
-// Etat du client
+// Etat de la connexion client/serveur
 enum eStatus
 {
 	STATUS_CONNECTED = 0,
 	STATUS_AUTHED
 };
 
-// Discriminant
-enum eAuthCmd
+// Discriminant (commande)
+enum eCmd
 {
-	AUTH_LOGON_CHALLENGE           = 0x00,
-	AUTH_LOGON_PROOF               = 0x01,
-	AUTH_REGISTER                  = 0x02
+	LOGON_C                       = 0x00,
+	LOGON_S                       = 0x01,
+	REGISTER_C                    = 0x02
 };
 
-// Messages
-typedef struct AUTH_LOGON_CHALLENGE_C
+enum eError
+{
+	OK                            = 0x00,
+	KO                            = 0x01
+};
+
+/** Messages
+typedef struct LOGON_C
 {
 	byte                          cmd;
 	unsigned short                size;
 	char                          login;
 	char                          pwd;
-} sAuthLogonChallenge_C;
-
-// Structure de lien entre une commande et une fonction
-typedef struct AuthHandler
-{
-	eAuthCmd             cmd;
-	unsigned long        status;
-	bool (AuthSocket::*cmd_handler)(void);
-} AuthHandler;
-
-// Initialisation de la structure
-const AuthHandler table[] =
-{
-	{ AUTH_LOGON_CHALLENGE,     STATUS_CONNECTED, &AuthSocket::HandleLogonChallenge    },
-	{ AUTH_LOGON_PROOF,         STATUS_CONNECTED, &AuthSocket::HandleLogonProof        },
-	{ AUTH_REGISTER,            STATUS_CONNECTED, &AuthSocket::HandleCreateUser        }
 };
 
-#define AUTH_TOTAL_COMMANDS 2
+typedef struct LOGON_S
+{
+	byte                          cmd;
+	byte                          error;
+}; */
+
+// Structure de lien entre une commande et une fonction
+typedef struct CmdHandler
+{
+	eCmd                          cmd;
+	byte                          status;
+	bool (AuthSocket::*cmd_handler)(void);
+} CmdHandler;
+
+// Initialisation de la structure
+const CmdHandler table[] =
+{
+	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
+	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleCreateUser        }
+};
+
+#define CLIENT_TOTAL_COMMANDS 2
 
 void AuthSocket::OnRead()
 {
@@ -54,7 +65,7 @@ void AuthSocket::OnRead()
 	if (handler->recv_soft((char *) &cmd, 1) != 0)
 	{
 		size_t i;
-		for (i = 0; i < AUTH_TOTAL_COMMANDS; ++i)
+		for (i = 0; i < CLIENT_TOTAL_COMMANDS; ++i)
 		{
 			if (table[i].cmd == cmd)
 			{
@@ -66,15 +77,15 @@ void AuthSocket::OnRead()
 			}
 		}
 
-		if (i == AUTH_TOTAL_COMMANDS)
+		if (i == CLIENT_TOTAL_COMMANDS)
 			std::cout << "Commande inconnue" << std::endl;
 	}
 }
 
-bool AuthSocket::HandleLogonChallenge()
+bool AuthSocket::HandleLogon()
 {
 	std::cout << "challenge" << std::endl;
-	ByteBuffer buf;
+	ByteBuffer buf, packet;
 
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
@@ -98,13 +109,14 @@ bool AuthSocket::HandleLogonChallenge()
 	buf >> p;
 	std::cout << p << " (pwd)" << std::endl;
 
-	return true;
-}
+	// envoi de la réponse au client
+	byte erreur = OK;
+	packet << byte(LOGON_S);
+	packet << erreur;
+	int nBytes = handler->send_soft((char*) packet.contents(), packet.size());
 
-bool AuthSocket::HandleLogonProof()
-{
-	std::cout << "logon" << std::endl;
-	return false;
+	std::cout << nBytes << " octets envoyes" << std::endl;
+	return true;
 }
 
 bool AuthSocket::HandleCreateUser()

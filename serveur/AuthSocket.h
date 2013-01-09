@@ -9,8 +9,7 @@ class AuthSocket : public SocketHandler::Session
 
 		virtual void OnRead(void);
 
-		bool HandleLogonChallenge();
-		bool HandleLogonProof();
+		bool HandleLogon();
 		bool HandleCreateUser();
 
 	private:

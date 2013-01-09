@@ -27,6 +27,7 @@ int main()
 			std::cout << "Nouveau client" << std::endl;
 
 			handler->handle_input();
+
 			system("pause");
 		}
 	}
