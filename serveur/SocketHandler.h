@@ -9,25 +9,25 @@ class SocketHandler
 		class Session
 		{
 			public:
-				Session(void) {};
-				virtual ~Session(void) {};
+				Session() {};
+				virtual ~Session() {};
 
-				virtual void OnRead(void) = 0; // Classe abstraite
+				virtual void OnRead() = 0; // Classe abstraite
 		};
 
-		SocketHandler(void);
-		virtual ~SocketHandler(void);
+		SocketHandler();
+		virtual ~SocketHandler();
 
 		void open(short);
 		void set_session(Session* session);
-		void wait_client(void);
+		void wait_client();
 
 		size_t recv_soft(char* buf, size_t len);
 		size_t send_soft(char* buf, size_t len);
 
 		// Gère les entrées / sorties de la socket
-		int handle_input(void);
-		int handle_output(void);
+		int handle_input();
+		int handle_output();
 
 	private:
 		SOCKET peer;

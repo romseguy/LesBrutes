@@ -26,7 +26,7 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 
 		virtual ~AuthWindow() { if (handler) delete handler; }
 
-		virtual void OnRead(void);
+		virtual void OnRead();
 
 	private:
 		SocketHandler* handler;

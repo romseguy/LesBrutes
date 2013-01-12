@@ -7,7 +7,7 @@ class AuthSocket : public SocketHandler::Session
 		AuthSocket(SocketHandler* _handler) : handler(_handler) { authed = false; };
 		virtual ~AuthSocket() { if (handler) delete handler; }
 
-		virtual void OnRead(void);
+		virtual void OnRead();
 
 		bool HandleLogon();
 		bool HandleCreateUser();

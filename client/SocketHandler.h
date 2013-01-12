@@ -9,24 +9,24 @@ class SocketHandler
 		class Session
 		{
 			public:
-				Session(void) {};
-				virtual ~Session(void) {};
+				Session() {};
+				virtual ~Session() {};
 
-				virtual void OnRead(void) = 0; // Classe abstraite
+				virtual void OnRead() = 0; // Classe abstraite
 		};
 
 		SocketHandler(std::string);
-		virtual ~SocketHandler(void);
+		virtual ~SocketHandler();
 
-		void open(void);
+		void open();
 		void set_session(Session* session);
 
 		size_t recv_soft(char* buf, size_t len);
 		size_t send_soft(char* buf, size_t len);
 
 		// Gère les entrées / sorties de la socket
-		int handle_input(void);
-		int handle_output(void);
+		int handle_input();
+		int handle_output();
 
 	private:
 		std::string serveraddress;
