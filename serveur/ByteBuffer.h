@@ -1,7 +1,7 @@
 #ifndef _BYTEBUFFER_H
 #define _BYTEBUFFER_H
 
-// Gère un vecteur d'octets avec _rpos et _wpos indiquant le début et la fin
+// Gère un vecteur d'octets avec m_rpos et m_wpos indiquant le début et la fin
 class ByteBuffer
 {
 	public:
@@ -9,11 +9,11 @@ class ByteBuffer
 		 static const size_t MAX_SIZE = 0x10000000; // 10mo
 
 		// constructor
-		ByteBuffer(): _rpos(0), _wpos(0) { storage.reserve(DEFAULT_SIZE); }
-		ByteBuffer(size_t res): _rpos(0), _wpos(0) { storage.reserve(res); }
+		ByteBuffer(): m_rpos(0), m_wpos(0) { storage.reserve(DEFAULT_SIZE); }
+		ByteBuffer(size_t res): m_rpos(0), m_wpos(0) { storage.reserve(res); }
 
 		// copy constructor
-		ByteBuffer(const ByteBuffer &buf): _rpos(buf._rpos), _wpos(buf._wpos), storage(buf.storage) {}
+		ByteBuffer(const ByteBuffer &buf): m_rpos(buf.m_rpos), m_wpos(buf.m_wpos), storage(buf.storage) {}
 
 		
 		// Operateur << byte,short,int,long
@@ -149,11 +149,11 @@ class ByteBuffer
 			return read<byte>(pos);
 		}
 
-		// Accesseurs _rpos _wpos
-		size_t rpos() const { return _rpos; }
-		size_t wpos() const { return _wpos; }
-		size_t rpos(size_t rpos_) { _rpos = rpos_; return _rpos; }
-		size_t wpos(size_t wpos_) { _wpos = wpos_; return _wpos; }
+		// Accesseurs m_rpos m_wpos
+		size_t rpos() const { return m_rpos; }
+		size_t wpos() const { return m_wpos; }
+		size_t rpos(size_t rpos_) { m_rpos = rpos_; return m_rpos; }
+		size_t wpos(size_t wpos_) { m_wpos = wpos_; return m_wpos; }
 
 		// Accesseurs vecteur
 		const byte* contents() const { return &storage[0]; }
@@ -164,8 +164,8 @@ class ByteBuffer
 		void resize(size_t newsize)
 		{
 			storage.resize(newsize, 0);
-			_rpos = 0;
-			_wpos = size();
+			m_rpos = 0;
+			m_wpos = size();
 		}
 
 		// Ecriture
@@ -188,11 +188,11 @@ class ByteBuffer
 				throw std::exception("append : depassement size");
 
 			// On aggrandit le vecteur si nécessaire
-			if (storage.size() < _wpos + cnt)
-				storage.resize(_wpos + cnt);
+			if (storage.size() < m_wpos + cnt)
+				storage.resize(m_wpos + cnt);
 
-			memcpy(&storage[_wpos], src, cnt);
-			_wpos += cnt;
+			memcpy(&storage[m_wpos], src, cnt);
+			m_wpos += cnt;
 		}
 
 		// Ecriture : pointeur char
@@ -204,8 +204,8 @@ class ByteBuffer
 		// Lecture
 		template <typename T> T read()
 		{
-			T r = read<T>(_rpos);
-			_rpos += sizeof(T);
+			T r = read<T>(m_rpos);
+			m_rpos += sizeof(T);
 
 			return r;
 		}
@@ -223,7 +223,7 @@ class ByteBuffer
 		}
 
 	private:
-		size_t _rpos, _wpos;
+		size_t m_rpos, m_wpos;
 		std::vector<byte> storage;
 };
 

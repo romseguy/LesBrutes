@@ -17,7 +17,7 @@ namespace ByteConverter
 	template<> inline void convert<1>(char *) {}
 
 	// Méthode d'entrée pour la conversion d'une valeur de type T
-	template<typename T> inline void apply(T *val)
+	template<typename T> inline void apply(T* val)
 	{
 		// que l'on cast en char* pour jouer sur les bits
 		convert<sizeof(T)>((char *)(val));
