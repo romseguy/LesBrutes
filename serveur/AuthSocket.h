@@ -4,13 +4,13 @@
 class AuthSocket : public SocketHandler::Session
 {
 	public:
-		AuthSocket(SocketHandler* _handler) : handler(_handler) { authed = false; };
+		AuthSocket(SocketHandler* _handler) : handler(_handler), authed(false) {}
 		virtual ~AuthSocket() {}
 
 		virtual void OnRead();
 
 		bool HandleLogon();
-		bool HandleCreateUser();
+		bool HandleRegister();
 
 	private:
 		SocketHandler* handler;

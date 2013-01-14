@@ -12,6 +12,7 @@ int main()
 
 	Fl::scheme("gtk+");
 	SocketHandler* handler = new SocketHandler();
+	handler->open();
 	AuthWindow* login = new AuthWindow(400, 250, "Les Brutes", handler);
 	handler->set_session(login);
 

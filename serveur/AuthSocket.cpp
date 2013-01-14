@@ -12,16 +12,8 @@ enum eStatus
 	STATUS_AUTHED
 };
 
-// Discriminant (commande)
-enum eCmd
-{
-	LOGON_C                       = 0x00,
-	LOGON_S                       = 0x01,
-	REGISTER_C                    = 0x02
-};
-
 /** Messages
-typedef struct LOGON_C
+struct LOGON_C, REGISTER_C
 {
 	byte                          cmd;
 	unsigned short                size;
@@ -29,11 +21,12 @@ typedef struct LOGON_C
 	char                          pwd;
 };
 
-typedef struct LOGON_S
+struct LOGON_S, REGISTER_S
 {
 	byte                          cmd;
 	byte                          error;
-}; */
+};
+**/
 
 // Structure de lien entre une commande et une fonction
 typedef struct CmdHandler
@@ -47,7 +40,7 @@ typedef struct CmdHandler
 const CmdHandler table[] =
 {
 	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
-	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleCreateUser        }
+	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          }
 };
 
 #define CLIENT_TOTAL_COMMANDS 2
@@ -65,7 +58,7 @@ void AuthSocket::OnRead()
 			size_t i;
 			for (i = 0; i < CLIENT_TOTAL_COMMANDS; ++i)
 			{
-				if (table[i].cmd == cmd)
+				if (table[i].cmd == cmd && (table[i].status == STATUS_CONNECTED || (authed && table[i].status == STATUS_AUTHED)))
 				{
 					// On appele la fonction correspondante à la commande donnée
 					if ((*this.*table[i].cmd_handler)())
@@ -117,15 +110,42 @@ bool AuthSocket::HandleLogon()
 	packet << byte(LOGON_S);
 	packet << byte(LOGIN_OK);
 	handler->send_soft((char*) packet.contents(), packet.size());
+	authed = true;
 
 	return true;
 }
 
-bool AuthSocket::HandleCreateUser()
+bool AuthSocket::HandleRegister()
 {
 	std::cout << "Commande : register" << std::endl;
+	ByteBuffer buf, packet;
 
-	// ("INSERT INTO user VALUES('test', '123');");
-   
+	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
+	buf.resize(2);
+	handler->recv_soft((char*) buf.contents(), 2);
+
+	unsigned short restant;
+	buf >> restant;
+
+	// on recupère le restant des données
+	buf.resize(restant + buf.size());
+	handler->recv_soft((char*) buf.contents(2), restant);
+
+	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
+	std::string l;
+	buf.rpos(2);
+	buf >> l;
+	std::cout << l << " (login)" << std::endl;
+
+	// mot de passe
+	std::string p;
+	buf >> p;
+	std::cout << p << " (pwd)" << std::endl;
+
+	// envoi de la réponse au client
+	packet << byte(REGISTER_S);
+	packet << byte(REGISTER_OK);
+	handler->send_soft((char*) packet.contents(), packet.size());
+
 	return true;
 }

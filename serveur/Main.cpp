@@ -16,8 +16,8 @@ int main()
 
 	try
 	{
-		handler->set_session(new AuthSocket(handler));
 		handler->open();
+		handler->set_session(new AuthSocket(handler));
 		std::cout << "Serveur ON" << std::endl;
 		handler->wait_client();
 		std::cout << "Nouveau client" << std::endl;
