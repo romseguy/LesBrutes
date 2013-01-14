@@ -3,7 +3,8 @@
 
 enum LoginResult
 {
-
+    LOGIN_OK                                     = 0x00,
+    LOGIN_KO                                     = 0x01
 };
 
 #endif

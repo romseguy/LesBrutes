@@ -20,12 +20,6 @@ enum eCmd
 	REGISTER_C                    = 0x02
 };
 
-enum eError
-{
-	OK                            = 0x00,
-	KO                            = 0x01
-};
-
 /** Messages
 typedef struct LOGON_C
 {
@@ -110,12 +104,10 @@ bool AuthSocket::HandleLogon()
 	std::cout << p << " (pwd)" << std::endl;
 
 	// envoi de la réponse au client
-	byte erreur = OK;
 	packet << byte(LOGON_S);
-	packet << erreur;
-	int nBytes = handler->send_soft((char*) packet.contents(), packet.size());
+	packet << byte(LOGIN_OK);
+	handler->send_soft((char*) packet.contents(), packet.size());
 
-	std::cout << nBytes << " octets envoyes" << std::endl;
 	return true;
 }
 

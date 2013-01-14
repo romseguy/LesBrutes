@@ -16,7 +16,7 @@ SocketHandler::~SocketHandler()
 		delete session_;
 }
 
-void SocketHandler::open(short service)
+void SocketHandler::open(unsigned short service)
 {
 	struct protoent *ppe = getprotobyname("tcp");
 

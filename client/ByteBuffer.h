@@ -15,7 +15,6 @@ class ByteBuffer
 		// copy constructor
 		ByteBuffer(const ByteBuffer &buf): m_rpos(buf.m_rpos), m_wpos(buf.m_wpos), storage(buf.storage) {}
 
-		
 		// Operateur << byte,short,int,long
 		ByteBuffer &operator<<(byte value)
 		{
