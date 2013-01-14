@@ -169,6 +169,12 @@ class ByteBuffer
 			m_wpos = size();
 		}
 
+		void clear()
+		{
+			storage.clear();
+			m_rpos = m_wpos = 0;
+		}
+
 		// Ecriture
 		template <typename T> void append(T value)
 		{

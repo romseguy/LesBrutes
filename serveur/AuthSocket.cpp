@@ -56,29 +56,39 @@ void AuthSocket::OnRead()
 {
 	byte cmd;
 
-	if (handler->recv_soft((char *) &cmd, 1) != 0)
+	while (true)
 	{
-		size_t i;
-		for (i = 0; i < CLIENT_TOTAL_COMMANDS; ++i)
-		{
-			if (table[i].cmd == cmd)
-			{
-				// On appele la fonction correspondante à la commande donnée
-				if ((*this.*table[i].cmd_handler)())
-					std::cout << "Commande executee" << std::endl;
-				else
-					std::cout << "Commande echec" << std::endl;
-			}
-		}
+		std::cout << "Attente d'une commande du client" << std::endl;
 
-		if (i == CLIENT_TOTAL_COMMANDS)
-			std::cout << "Commande inconnue" << std::endl;
+		if (handler->recv_soft((char *) &cmd, 1) != 0)
+		{
+			size_t i;
+			for (i = 0; i < CLIENT_TOTAL_COMMANDS; ++i)
+			{
+				if (table[i].cmd == cmd)
+				{
+					// On appele la fonction correspondante à la commande donnée
+					if ((*this.*table[i].cmd_handler)())
+						std::cout << "Commande : executee" << std::endl;
+					else
+					{
+						std::cout << "Commande : echec" << std::endl;
+						return;
+					}
+
+					break;
+				}
+			}
+
+			if (i == CLIENT_TOTAL_COMMANDS)
+				std::cout << "Commande : inconnue" << std::endl;
+		}
 	}
 }
 
 bool AuthSocket::HandleLogon()
 {
-	std::cout << "challenge" << std::endl;
+	std::cout << "Commande : challenge" << std::endl;
 	ByteBuffer buf, packet;
 
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
@@ -113,7 +123,7 @@ bool AuthSocket::HandleLogon()
 
 bool AuthSocket::HandleCreateUser()
 {
-	std::cout << "register" << std::endl;
+	std::cout << "Commande : register" << std::endl;
 
 	// ("INSERT INTO user VALUES('test', '123');");
    

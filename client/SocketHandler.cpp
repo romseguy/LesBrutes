@@ -71,12 +71,10 @@ size_t SocketHandler::send_soft(char* buf, size_t len)
 	return nBytes;
 }
 
-int SocketHandler::handle_input()
+void SocketHandler::handle_input()
 {
 	if (session_ != NULL)
 	{
 		session_->OnRead();
 	}
-
-	return 0;
 }

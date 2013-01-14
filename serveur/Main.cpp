@@ -22,6 +22,7 @@ int main()
 		handler->wait_client();
 		std::cout << "Nouveau client" << std::endl;
 		handler->handle_input();
+		system("pause");
 	}
 	catch (std::exception e)
 	{

@@ -25,7 +25,7 @@ class SocketHandler
 		size_t recv_soft(char* buf, size_t len);
 		size_t send_soft(char* buf, size_t len);
 
-		int handle_input();
+		void handle_input();
 
 	private:
 		std::string serveraddress;
