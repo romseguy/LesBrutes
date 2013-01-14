@@ -18,7 +18,7 @@ class SocketHandler
 		SocketHandler();
 		virtual ~SocketHandler();
 
-		void open(unsigned short);
+		void open();
 		void set_session(Session* session);
 		void wait_client();
 
@@ -28,8 +28,10 @@ class SocketHandler
 		int handle_input();
 
 	private:
-		SOCKET peer;
-		SOCKET slave;
+		std::string serveraddress;
+		unsigned short service;
+		SOCKET peer;  // socket serveur
+		SOCKET slave; // socket client
 		Session* session_;
 };
 

@@ -1,22 +1,23 @@
 #include "stdafx.h"
 
+#include "Config.h"
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
-SocketHandler::SocketHandler() : session_(NULL), peer(NULL), slave(NULL)
+SocketHandler::SocketHandler() : session_(NULL), serveraddress(ip), service(port), peer(NULL), slave(NULL)
 {
 }
 
 SocketHandler::~SocketHandler()
 {
-	closesocket(peer);
-	closesocket(slave);
-
 	if (session_)
 		delete session_;
+
+	closesocket(slave);
+	closesocket(peer);
 }
 
-void SocketHandler::open(unsigned short service)
+void SocketHandler::open()
 {
 	struct protoent *ppe = getprotobyname("tcp");
 

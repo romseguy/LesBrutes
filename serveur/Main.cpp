@@ -2,6 +2,7 @@
 
 #include "Sockethandler.h"
 #include "AuthSocket.h"
+#include "Config.h"
 
 bool stopEvent = false;
 
@@ -11,31 +12,21 @@ int main()
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-	// Ouverture socket d'écoute du réseau sur le port 5678
 	SocketHandler* handler = new SocketHandler();
 
 	try
 	{
-		handler->open(5678);
 		handler->set_session(new AuthSocket(handler));
+		handler->open();
 		std::cout << "Serveur ON" << std::endl;
-
-		while (!stopEvent)
-		{
-			std::cout << "Attente client" << std::endl;
-			handler->wait_client();
-			std::cout << "Nouveau client" << std::endl;
-
-			handler->handle_input();
-
-			system("pause");
-		}
+		handler->wait_client();
+		std::cout << "Nouveau client" << std::endl;
+		handler->handle_input();
 	}
 	catch (std::exception e)
 	{
 		std::cout << "SOCKET ERROR : " << e.what() << std::endl;
 		std::cout << "WSA ERROR : " << WSAGetLastError() << std::endl;
-		system("pause");
 
 		delete handler;
 		WSACleanup();
@@ -43,7 +34,7 @@ int main()
 	}
 
 	delete handler;
-	WSACleanup ();
+	WSACleanup();
 
 	return 0;
 }

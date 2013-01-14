@@ -25,7 +25,3 @@
 
 #include <winsock2.h>
 #include <windows.h>
-
-#include "ByteConverter.h"
-
-typedef unsigned char byte;

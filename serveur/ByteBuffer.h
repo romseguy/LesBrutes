@@ -1,6 +1,8 @@
 #ifndef _BYTEBUFFER_H
 #define _BYTEBUFFER_H
 
+#include "ByteConverter.h"
+
 // Gère un vecteur d'octets avec m_rpos et m_wpos indiquant le début et la fin
 class ByteBuffer
 {

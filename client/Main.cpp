@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "SocketHandler.h"
-#include "AuthWindow.h"
+#include "../serveur/SocketHandler.h"
 
+#include "AuthWindow.h"
 
 int main()
 {
@@ -11,11 +11,9 @@ int main()
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
 	Fl::scheme("gtk+");
-	SocketHandler* handler = new SocketHandler("127.0.0.1");
+	SocketHandler* handler = new SocketHandler();
 	AuthWindow* login = new AuthWindow(400, 250, "Les Brutes", handler);
 	handler->set_session(login);
-
-	WSACleanup();
 
 	return Fl::run();
 }

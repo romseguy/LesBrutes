@@ -1,8 +1,9 @@
 #include "stdafx.h"
 
-#include "SocketHandler.h"
+#include "../serveur/Config.h"
+#include "../serveur/SocketHandler.h"
 
-SocketHandler::SocketHandler(std::string ip) : session_(NULL), serveraddress(ip), peer(NULL)
+SocketHandler::SocketHandler() : session_(NULL), serveraddress(ip), service(port), peer(NULL)
 {
 }
 
@@ -34,7 +35,7 @@ void SocketHandler::open()
 	memset (&sin, 0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = inet_addr (serveraddress.c_str());
-	sin.sin_port = htons(5678);
+	sin.sin_port = htons(service);
 
 	if (connect (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
 		fl_alert("Echec connect : %d", WSAGetLastError());
