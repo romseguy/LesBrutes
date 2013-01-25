@@ -36,9 +36,6 @@
     <ClInclude Include="ByteConverter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="sqlite3.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
