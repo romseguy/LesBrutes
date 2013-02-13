@@ -3,7 +3,9 @@
 #include "../serveur/SocketHandler.h"
 #include "../serveur/ByteBuffer.h"
 #include "../serveur/AuthCodes.h"
+#include "../serveur/Brute.h"
 
+#include "MainWindow.h"
 #include "AuthWindow.h"
 
 /** Messages
@@ -36,19 +38,16 @@ struct INFO_BRUTE_S
 };
 **/
 
-void AuthWindow::OnRead()
-{
-}
-
 bool AuthWindow::HandleLogon()
 {
-	const char* login = txt_login->value();
-	const char* pwd = txt_pwd->value();
+	std::string login(txt_login->value());
+	std::string pwd(txt_pwd->value());
+
 	ByteBuffer packet, buf;
 
 	// requête connexion
 	packet << uint8_t(LOGON_C);
-	packet << uint16_t(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
+	packet << uint16_t(login.length() + pwd.length() + 2); // ne pas oublier les 0 de fin de chaine
 	packet << login;
 	packet << pwd;
 
@@ -69,7 +68,7 @@ bool AuthWindow::HandleLogon()
 		// requête pour récupérer les infos de notre brute
 		packet.clear();
 		packet << uint8_t(INFO_BRUTE_C);
-		packet << uint16_t(strlen(login) + 1);
+		packet << uint16_t(login.length() + 1);
 		packet << login;
 
 		if (!handler->send_soft((char*) packet.contents(), packet.size()))
@@ -98,6 +97,8 @@ bool AuthWindow::HandleLogon()
 		buf.rpos(3);
 		uint8_t level;
 		buf >> level;
+
+		handler->set_session(new MainWindow(1024, 768, "Les Brutes", handler, new Brute(login, pwd, level)));
 	}
 	else
 		fl_alert("Connexion : échec");

@@ -6,13 +6,13 @@
 class AuthWindow : public Fl_Window, public SocketHandler::Session
 {
 	public:
-		AuthWindow(int w, int h, const char* name = 0, SocketHandler* s = NULL) : handler(s), Fl_Window(w, h, name)
+		AuthWindow(int w, int h, const char* name, SocketHandler* s) : handler(s), Fl_Window(w, h, name)
 		{
-			resize(0, 0, 400, 400);
+			begin();
 
-				form_login = new Fl_Group(0, 0, 400, 400);
+				form_login = new Fl_Group(0, 0, w, h);
 				{
-					size_t offset_x = 100;
+					size_t offset_x = 120;
 					size_t offset_y = 120;
 					txt_login               = new Fl_Input        (offset_x,    offset_y+0,   200, 25, "Login");
 					txt_pwd                 = new Fl_Secret_Input (offset_x,    offset_y+30,  200, 25, "Mot de passe");
@@ -28,9 +28,9 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 			show();
 		}
 
-		virtual ~AuthWindow() { if (handler) delete handler; }
+		virtual ~AuthWindow() {}
 
-		virtual void OnRead();
+		virtual void OnRead() {}
 
 		bool HandleLogon();
 		bool HandleRegister();

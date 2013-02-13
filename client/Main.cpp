@@ -15,7 +15,7 @@ int main()
 	try
 	{
 		handler->open();
-		handler->set_session(new AuthWindow(400, 250, "Les Brutes", handler));
+		handler->set_session(new AuthWindow(400, 400, "Les Brutes : Connexion", handler));
 	}
 	catch (std::runtime_error& e)
 	{
