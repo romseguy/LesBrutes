@@ -6,15 +6,26 @@
 
 int main()
 {
-	// Initialisation Winsock prérequis Windows
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
-
 	Fl::scheme("gtk+");
+
 	SocketHandler* handler = new SocketHandler();
-	handler->open();
-	AuthWindow* login = new AuthWindow(400, 250, "Les Brutes", handler);
-	handler->set_session(login);
+
+	try
+	{
+		handler->open();
+		handler->set_session(new AuthWindow(400, 250, "Les Brutes", handler));
+	}
+	catch (std::runtime_error& e)
+	{
+		std::cout << "SOCKET ERROR : " << e.what() << std::endl;
+		std::cout << "WSA ERROR : " << WSAGetLastError() << std::endl;
+
+		delete handler;
+		WSACleanup();
+		return 1;
+	}
 
 	return Fl::run();
 }

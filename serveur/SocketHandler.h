@@ -1,18 +1,16 @@
 #ifndef SOCKETHANDLER_H
 #define SOCKETHANDLER_H
 
-// Gère la socket
 class SocketHandler
 {
 	public:
-		// Représente la session gérée par la socket
 		class Session
 		{
 			public:
 				Session() {};
 				virtual ~Session() {};
 
-				virtual void OnRead() = 0; // Classe abstraite
+				virtual void OnRead() = 0;
 		};
 
 		SocketHandler();
@@ -30,8 +28,9 @@ class SocketHandler
 	private:
 		std::string serveraddress;
 		uint16_t service;
-		SOCKET peer;  // socket serveur
-		SOCKET slave; // socket client
+
+		SOCKET peer;  // listening socket
+		SOCKET slave; // client socket
 		Session* session_;
 };
 
