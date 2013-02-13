@@ -58,7 +58,7 @@ bool AuthWindow::HandleLogon()
 			redraw();
 			break;
 		case LOGIN_KO:
-			fl_alert("Echec dans la connexion");
+			fl_alert("Connexion : échec");
 			break;
 	}
 
@@ -92,13 +92,13 @@ bool AuthWindow::HandleRegister()
 	switch (buf[1])
 	{
 		case REGISTER_ALREADY_EXISTS:
-			fl_alert("Veuillez choisir un autre login.");
+			fl_alert("Inscription : Veuillez choisir un autre login.");
 			break;
 		case REGISTER_OK:
-			fl_alert("La brute %s a été crée avec succès", login);
+			fl_alert("Inscription : brute %s créée", login);
 			break;
 		case REGISTER_KO:
-			fl_alert("Echec dans la creation de la brute");
+			fl_alert("Inscription : échec");
 			break;
 	}
 
