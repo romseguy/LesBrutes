@@ -8,10 +8,9 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 	public:
 		AuthWindow(int w, int h, const char* name = 0, SocketHandler* s = NULL) : handler(s), Fl_Window(w, h, name)
 		{
-			begin();
 			resize(0, 0, 400, 400);
 
-				form_login                  = new Fl_Group        (0,  0,   400, 400);
+				form_login = new Fl_Group(0, 0, 400, 400);
 				{
 					size_t offset_x = 100;
 					size_t offset_y = 120;

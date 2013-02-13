@@ -21,6 +21,7 @@
 #include "FL/Fl_Input.h"
 #include "FL/Fl_Secret_Input.h"
 #include "FL/Fl_ask.H"
+#include "FL/Fl_Box.H"
 
 #include <winsock2.h>
 #include <windows.h>

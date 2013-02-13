@@ -8,6 +8,8 @@ class Brute
 		virtual ~Brute() {}
 
 		std::string getLogin() const { return login; }
+		uint8_t getLevel() const { return level; }
+
 		bool isValidPassword(std::string const& p) const { return password.compare(p) == 0; }
 
 	private:

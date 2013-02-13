@@ -18,14 +18,28 @@ struct LOGON_C, REGISTER_C
 {
 	uint8_t                       cmd;
 	uint16_t                      size;
-	char                          login;
-	char                          pwd;
+	char[]                        login;
+	char[]                        pwd;
 };
 
 struct LOGON_S, REGISTER_S
 {
 	uint8_t                       cmd;
-	uint8_t                          error;
+	uint8_t                       error;
+};
+
+struct INFO_BRUTE_C
+{
+	uint8_t                       cmd;
+	uint16_t                      size;
+	char[]                        login;
+};
+
+struct INFO_BRUTE_S
+{
+	uint8_t                       cmd;
+	uint16_t                      size;
+	uint8_t                       level;
 };
 **/
 
@@ -41,10 +55,11 @@ typedef struct CmdHandler
 const CmdHandler table[] =
 {
 	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
-	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          }
+	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          },
+	{ INFO_BRUTE_C,          STATUS_AUTHED,    &AuthSocket::HandleInfoBrute         }
 };
 
-#define CLIENT_TOTAL_COMMANDS 2
+#define CLIENT_TOTAL_COMMANDS 3
 
 void AuthSocket::OnRead()
 {
@@ -75,7 +90,7 @@ void AuthSocket::OnRead()
 			}
 
 			if (i == CLIENT_TOTAL_COMMANDS)
-				std::cout << "Commande : inconnue" << std::endl;
+				std::cout << "Commande : inconnue " << std::endl;
 		}
 	}
 }
@@ -100,7 +115,7 @@ bool AuthSocket::HandleLogon()
 	if (!handler->recv_soft((char*) buf.contents(2), restant))
 		return false;
 
-	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
+	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	std::string l, p;
 	buf.rpos(2);
 	buf >> l;
@@ -142,7 +157,7 @@ bool AuthSocket::HandleRegister()
 	if (!handler->recv_soft((char*) buf.contents(2), restant))
 		return false;
 
-	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
+	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	std::string l, p;
 	buf.rpos(2);
 	buf >> l;
@@ -158,6 +173,43 @@ bool AuthSocket::HandleRegister()
 		BruteManager::getInstance().add(new Brute(l, p, uint8_t(1)));
 		packet << uint8_t(REGISTER_OK);
 	}
+
+	return handler->send_soft((char*) packet.contents(), packet.size());
+}
+
+bool AuthSocket::HandleInfoBrute()
+{
+	std::cout << "Commande : info brute" << std::endl;
+	ByteBuffer buf, packet;
+
+	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
+	buf.resize(2);
+
+	if (!handler->recv_soft((char*) buf.contents(), 2))
+		return false;
+
+	uint16_t restant;
+	buf >> restant;
+
+	// on recupère le restant des données
+	buf.resize(restant + buf.size());
+
+	if (!handler->recv_soft((char*) buf.contents(2), restant))
+		return false;
+
+	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
+	std::string l;
+	buf.rpos(2);
+	buf >> l;
+
+	Brute* b = BruteManager::getInstance().get(l);
+
+	// réponse
+	packet << uint8_t(INFO_BRUTE_S);
+	packet << uint16_t(1);
+	packet << b->getLevel();
+
+	delete b;
 
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }

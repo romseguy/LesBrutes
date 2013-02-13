@@ -11,6 +11,7 @@ class AuthSocket : public SocketHandler::Session
 
 		bool HandleLogon();
 		bool HandleRegister();
+		bool HandleInfoBrute();
 
 	private:
 		SocketHandler* handler;

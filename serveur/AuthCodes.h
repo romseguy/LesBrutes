@@ -8,6 +8,8 @@ enum eCmd
 	LOGON_S                       = 0x01,
 	REGISTER_C                    = 0x02,
 	REGISTER_S                    = 0x03,
+	INFO_BRUTE_C                  = 0x04,
+	INFO_BRUTE_S                  = 0x05
 };
 
 enum LoginResult
