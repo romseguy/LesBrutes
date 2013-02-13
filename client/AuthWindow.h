@@ -39,24 +39,14 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 		// Callbacks des boutons
 		static void but_login_cb(Fl_Widget* w, void* data)
 		{
-			if (((AuthWindow*) data)->HandleLogon())
-			{
-				fl_alert("La connexion a réussi");
-
-				((AuthWindow*) data)->resize(50, 50, 1024, 768);
-				delete ((AuthWindow*) data)->form_login;
-				((AuthWindow*) data)->redraw();
-			}
-			else
-				fl_alert("La connexion a échouée");
+			if (!((AuthWindow*) data)->HandleLogon())
+				fl_alert("La commande de connexion a échouée");
 		}
 
 		static void but_register_cb(Fl_Widget* w, void* data)
 		{
-			if (((AuthWindow*) data)->HandleRegister())
-				fl_alert("Compte créé avec succès");
-			else
-				fl_alert("Echec dans la création du compte");
+			if (!((AuthWindow*) data)->HandleRegister())
+				fl_alert("La commande de création de compte a échouée");
 		}
 
 	private:

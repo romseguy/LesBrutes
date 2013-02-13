@@ -19,7 +19,8 @@ enum LoginResult
 enum RegisterResult
 {
 	REGISTER_OK                                  = 0x00,
-	REGISTER_KO                                  = 0x01
+	REGISTER_KO                                  = 0x01,
+	REGISTER_ALREADY_EXISTS                      = 0x02
 };
 
 #endif

@@ -59,8 +59,8 @@ void SocketHandler::wait_client()
 
 bool SocketHandler::recv_soft(char* buf, size_t len)
 {
-	int bytesRcvd = 0;
-	int bytesLeft = len;
+	size_t bytesRcvd = 0;
+	size_t bytesLeft = len;
 	int nBytes;
 
 	while (bytesRcvd < len)
@@ -79,8 +79,8 @@ bool SocketHandler::recv_soft(char* buf, size_t len)
 
 bool SocketHandler::send_soft(char* buf, size_t len)
 {
-	int bytesSent = 0;
-	int bytesLeft = len;
+	size_t bytesSent = 0;
+	size_t bytesLeft = len;
 	int nBytes;
 
 	while (bytesSent < len)

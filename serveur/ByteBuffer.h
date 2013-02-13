@@ -153,8 +153,8 @@ class ByteBuffer
 		// Accesseurs m_rpos m_wpos
 		size_t rpos() const { return m_rpos; }
 		size_t wpos() const { return m_wpos; }
-		size_t rpos(size_t rpos_) { m_rpos = rpos_; return m_rpos; }
-		size_t wpos(size_t wpos_) { m_wpos = wpos_; return m_wpos; }
+		size_t rpos(size_t rpos) { m_rpos = rpos; return m_rpos; }
+		size_t wpos(size_t wpos) { m_wpos = wpos; return m_wpos; }
 
 		// Accesseurs vecteur
 		const uint8_t* contents() const { return &storage[0]; }

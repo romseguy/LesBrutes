@@ -4,6 +4,7 @@
 #include "AuthSocket.h"
 #include "AuthCodes.h"
 #include "ByteBuffer.h"
+#include "BruteManager.h"
 
 // Etat de la connexion client/serveur
 enum eStatus
@@ -86,33 +87,39 @@ bool AuthSocket::HandleLogon()
 
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
-	handler->recv_soft((char*) buf.contents(), 2);
+
+	if (!handler->recv_soft((char*) buf.contents(), 2))
+		return false;
 
 	uint16_t restant;
 	buf >> restant;
 
 	// on recupère le restant des données
 	buf.resize(restant + buf.size());
-	handler->recv_soft((char*) buf.contents(2), restant);
+
+	if (!handler->recv_soft((char*) buf.contents(2), restant))
+		return false;
 
 	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
-	std::string l;
+	std::string l, p;
 	buf.rpos(2);
 	buf >> l;
-	std::cout << l << " (login)" << std::endl;
-
-	// mot de passe
-	std::string p;
 	buf >> p;
-	std::cout << p << " (pwd)" << std::endl;
 
-	// envoi de la réponse au client
+	// réponse
 	packet << uint8_t(LOGON_S);
-	packet << uint8_t(LOGIN_OK);
-	handler->send_soft((char*) packet.contents(), packet.size());
-	authed = true;
 
-	return true;
+	Brute* b = BruteManager::getInstance().get(l);
+
+	if (b && b->isValidPassword(p))
+	{
+		authed = true;
+		packet << uint8_t(LOGIN_OK);
+	}
+	else
+		packet << uint8_t(LOGIN_KO);
+
+	return handler->send_soft((char*) packet.contents(), packet.size());
 }
 
 bool AuthSocket::HandleRegister()
@@ -122,30 +129,35 @@ bool AuthSocket::HandleRegister()
 
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
-	handler->recv_soft((char*) buf.contents(), 2);
+
+	if (!handler->recv_soft((char*) buf.contents(), 2))
+		return false;
 
 	uint16_t restant;
 	buf >> restant;
 
 	// on recupère le restant des données
 	buf.resize(restant + buf.size());
-	handler->recv_soft((char*) buf.contents(2), restant);
+
+	if (!handler->recv_soft((char*) buf.contents(2), restant))
+		return false;
 
 	// décalage de 3 octets pour récupérer le login car rpos est remis à 0 avec le resize
-	std::string l;
+	std::string l, p;
 	buf.rpos(2);
 	buf >> l;
-	std::cout << l << " (login)" << std::endl;
-
-	// mot de passe
-	std::string p;
 	buf >> p;
-	std::cout << p << " (pwd)" << std::endl;
 
-	// envoi de la réponse au client
+	// réponse
 	packet << uint8_t(REGISTER_S);
-	packet << uint8_t(REGISTER_OK);
-	handler->send_soft((char*) packet.contents(), packet.size());
 
-	return true;
+	if (BruteManager::getInstance().get(l))
+		packet << uint8_t(REGISTER_ALREADY_EXISTS);
+	else
+	{
+		BruteManager::getInstance().add(new Brute(l, p, uint8_t(1)));
+		packet << uint8_t(REGISTER_OK);
+	}
+
+	return handler->send_soft((char*) packet.contents(), packet.size());
 }
