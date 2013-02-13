@@ -15,14 +15,15 @@
 #include <string>
 #include <vector>
 
-#include <FL/Fl.h>
-#include "FL/Fl_Widget.h"
-#include "FL/Fl_Window.h"
-#include "FL/Fl_Button.h"
-#include "FL/Fl_Input.h"
-#include "FL/Fl_Secret_Input.h"
-#include "FL/Fl_ask.H"
-#include "FL/Fl_Box.H"
-
 #include <winsock2.h>
 #include <windows.h>
+
+#include <FL/Fl.h>
+#include <FL/Fl_Widget.h>
+#include <FL/Fl_Window.h>
+#include <FL/Fl_Button.h>
+#include <FL/Fl_Input.h>
+#include <FL/Fl_Secret_Input.h>
+#include <FL/Fl_ask.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Text_Display.H>
