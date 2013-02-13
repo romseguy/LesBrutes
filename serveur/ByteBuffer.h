@@ -1,5 +1,5 @@
-#ifndef _BYTEBUFFER_H
-#define _BYTEBUFFER_H
+#ifndef BYTEBUFFER_H
+#define BYTEBUFFER_H
 
 #include "ByteConverter.h"
 
@@ -18,47 +18,47 @@ class ByteBuffer
 		ByteBuffer(const ByteBuffer &buf): m_rpos(buf.m_rpos), m_wpos(buf.m_wpos), storage(buf.storage) {}
 
 		// Operateur << byte,short,int,long
-		ByteBuffer &operator<<(byte value)
+		ByteBuffer &operator<<(uint8_t value)
 		{
-			append<byte>(value);
+			append<uint8_t>(value);
 			return *this;
 		}
 
 		// unsigned
-		ByteBuffer &operator<<(unsigned short value)
+		ByteBuffer &operator<<(uint16_t value)
 		{
-			append<unsigned short>(value);
+			append<uint16_t>(value);
 			return *this;
 		}
 
-		ByteBuffer &operator<<(unsigned int value)
+		ByteBuffer &operator<<(uint32_t value)
 		{
-			append<unsigned int>(value);
+			append<uint32_t>(value);
 			return *this;
 		}
 
-		ByteBuffer &operator<<(unsigned long value)
+		ByteBuffer &operator<<(uint64_t value)
 		{
-			append<unsigned long>(value);
+			append<uint64_t>(value);
 			return *this;
 		}
 
 		// signed
-		ByteBuffer &operator<<(short value)
+		ByteBuffer &operator<<(int16_t value)
 		{
-			append<short>(value);
+			append<int16_t>(value);
 			return *this;
 		}
 
-		ByteBuffer &operator<<(int value)
+		ByteBuffer &operator<<(int32_t value)
 		{
-			append<long>(value);
+			append<int32_t>(value);
 			return *this;
 		}
 
-		ByteBuffer &operator<<(long value)
+		ByteBuffer &operator<<(int64_t value)
 		{
-			append<long>(value);
+			append<int64_t>(value);
 			return *this;
 		}
 
@@ -66,63 +66,63 @@ class ByteBuffer
 		ByteBuffer &operator<<(const std::string &value)
 		{
 			if (size_t len = value.length())
-				append((byte const*)value.c_str(), len);
+				append((uint8_t const*)value.c_str(), len);
 
-			append((byte)0);
+			append((uint8_t)0);
 			return *this;
 		}
 
 		ByteBuffer &operator<<(const char *str)
 		{
 			if (size_t len = (str ? strlen(str) : 0))
-				append((byte const*)str, len);
+				append((uint8_t const*)str, len);
 
-			append((byte)0);
+			append((uint8_t)0);
 			return *this;
 		}
 
 		// Operateur >> byte,short,int,long
-		ByteBuffer &operator>>(byte &value)
+		ByteBuffer &operator>>(uint8_t &value)
 		{
-			value = read<byte>();
+			value = read<uint8_t>();
 			return *this;
 		}
 
 		// unsigned
-		ByteBuffer &operator>>(unsigned short &value)
+		ByteBuffer &operator>>(uint16_t &value)
 		{
-			value = read<unsigned short>();
+			value = read<uint16_t>();
 			return *this;
 		}
 
-		ByteBuffer &operator>>(unsigned int &value)
+		ByteBuffer &operator>>(uint32_t &value)
 		{
-			value = read<unsigned int>();
+			value = read<uint32_t>();
 			return *this;
 		}
 
-		ByteBuffer &operator>>(unsigned long &value)
+		ByteBuffer &operator>>(uint64_t &value)
 		{
-			value = read<unsigned long>();
+			value = read<uint64_t>();
 			return *this;
 		}
 
 		// signed
-		ByteBuffer &operator>>(short &value)
+		ByteBuffer &operator>>(int16_t &value)
 		{
-			value = read<short>();
+			value = read<int16_t>();
 			return *this;
 		}
 
-		ByteBuffer &operator>>(int &value)
+		ByteBuffer &operator>>(int32_t &value)
 		{
-			value = read<int>();
+			value = read<int32_t>();
 			return *this;
 		}
 
-		ByteBuffer &operator>>(long &value)
+		ByteBuffer &operator>>(int64_t &value)
 		{
-			value = read<long>();
+			value = read<int64_t>();
 			return *this;
 		}
 
@@ -145,9 +145,9 @@ class ByteBuffer
 			return *this;
 		}
 
-		byte operator[](size_t pos) const
+		uint8_t operator[](size_t pos) const
 		{
-			return read<byte>(pos);
+			return read<uint8_t>(pos);
 		}
 
 		// Accesseurs m_rpos m_wpos
@@ -157,33 +157,29 @@ class ByteBuffer
 		size_t wpos(size_t wpos_) { m_wpos = wpos_; return m_wpos; }
 
 		// Accesseurs vecteur
-		const byte* contents() const { return &storage[0]; }
-		const byte* contents(size_t pos) const { return &storage[pos]; }
+		const uint8_t* contents() const { return &storage[0]; }
+		const uint8_t* contents(size_t pos) const { return &storage[pos]; }
 		size_t size() const { return storage.size(); }
 		bool empty() const { return storage.empty(); }
 
-		void resize(size_t newsize)
-		{
-			storage.resize(newsize, 0);
-			m_rpos = 0;
-			m_wpos = size();
-		}
+		void resize(size_t newsize) { storage.resize(newsize, 0); m_rpos = 0; m_wpos = size(); }
+		void clear() { storage.clear(); m_rpos = m_wpos = 0; }
 
-		void clear()
-		{
-			storage.clear();
-			m_rpos = m_wpos = 0;
-		}
-
-		// Ecriture
+		// Ecriture générique
 		template <typename T> void append(T value)
 		{
 			EndianConvert(value);
-			append((byte *)&value, sizeof(value));
+			append((uint8_t *)&value, sizeof(value));
+		}
+
+		// Ecriture : pointeur char
+		void append(const char* src, size_t cnt)
+		{
+			return append((const uint8_t *)src, cnt);
 		}
 
 		// Ecriture : pointeur d'octets
-		void append(const byte *src, size_t cnt)
+		void append(const uint8_t *src, size_t cnt)
 		{
 			if (!cnt)
 				throw std::exception("append : cnt manquant");
@@ -202,13 +198,7 @@ class ByteBuffer
 			m_wpos += cnt;
 		}
 
-		// Ecriture : pointeur char
-		void append(const char* src, size_t cnt)
-		{
-			return append((const byte *)src, cnt);
-		}
-
-		// Lecture
+		// Lecture générique
 		template <typename T> T read()
 		{
 			T r = read<T>(m_rpos);
@@ -231,7 +221,7 @@ class ByteBuffer
 
 	private:
 		size_t m_rpos, m_wpos;
-		std::vector<byte> storage;
+		std::vector<uint8_t> storage;
 };
 
 #endif

@@ -9,22 +9,21 @@
 /** Messages
 struct LOGON_C, REGISTER_C
 {
-	byte                          cmd;
-	unsigned short                size;
+	uint8_t                       cmd;
+	uint16_t                      size;
 	char                          login;
 	char                          pwd;
 };
 
 struct LOGON_S, REGISTER_S
 {
-	byte                          cmd;
-	byte                          error;
+	uint8_t                          cmd;
+	uint8_t                          error;
 };
 **/
 
 void AuthWindow::OnRead()
 {
-
 }
 
 bool AuthWindow::HandleLogon()
@@ -34,8 +33,8 @@ bool AuthWindow::HandleLogon()
 	ByteBuffer packet, buf;
 
 	// requête
-	packet << byte(LOGON_C);
-	packet << unsigned short(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
+	packet << uint8_t(LOGON_C);
+	packet << uint16_t(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
 	packet << login;
 	packet << pwd;
 
@@ -55,8 +54,8 @@ bool AuthWindow::HandleRegister()
 	ByteBuffer packet, buf;
 
 	// requête
-	packet << byte(REGISTER_C);
-	packet << unsigned short(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
+	packet << uint8_t(REGISTER_C);
+	packet << uint16_t(strlen(login) + strlen(pwd) + 2); // ne pas oublier les 0 de fin de chaine
 	packet << login;
 	packet << pwd;
 

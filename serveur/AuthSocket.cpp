@@ -15,16 +15,16 @@ enum eStatus
 /** Messages
 struct LOGON_C, REGISTER_C
 {
-	byte                          cmd;
-	unsigned short                size;
+	uint8_t                       cmd;
+	uint16_t                      size;
 	char                          login;
 	char                          pwd;
 };
 
 struct LOGON_S, REGISTER_S
 {
-	byte                          cmd;
-	byte                          error;
+	uint8_t                       cmd;
+	uint8_t                          error;
 };
 **/
 
@@ -32,7 +32,7 @@ struct LOGON_S, REGISTER_S
 typedef struct CmdHandler
 {
 	eCmd                          cmd;
-	byte                          status;
+	uint8_t                       status;
 	bool (AuthSocket::*cmd_handler)(void);
 } CmdHandler;
 
@@ -47,7 +47,7 @@ const CmdHandler table[] =
 
 void AuthSocket::OnRead()
 {
-	byte cmd;
+	uint8_t cmd;
 
 	while (true)
 	{
@@ -88,7 +88,7 @@ bool AuthSocket::HandleLogon()
 	buf.resize(2);
 	handler->recv_soft((char*) buf.contents(), 2);
 
-	unsigned short restant;
+	uint16_t restant;
 	buf >> restant;
 
 	// on recupère le restant des données
@@ -107,8 +107,8 @@ bool AuthSocket::HandleLogon()
 	std::cout << p << " (pwd)" << std::endl;
 
 	// envoi de la réponse au client
-	packet << byte(LOGON_S);
-	packet << byte(LOGIN_OK);
+	packet << uint8_t(LOGON_S);
+	packet << uint8_t(LOGIN_OK);
 	handler->send_soft((char*) packet.contents(), packet.size());
 	authed = true;
 
@@ -124,7 +124,7 @@ bool AuthSocket::HandleRegister()
 	buf.resize(2);
 	handler->recv_soft((char*) buf.contents(), 2);
 
-	unsigned short restant;
+	uint16_t restant;
 	buf >> restant;
 
 	// on recupère le restant des données
@@ -143,8 +143,8 @@ bool AuthSocket::HandleRegister()
 	std::cout << p << " (pwd)" << std::endl;
 
 	// envoi de la réponse au client
-	packet << byte(REGISTER_S);
-	packet << byte(REGISTER_OK);
+	packet << uint8_t(REGISTER_S);
+	packet << uint8_t(REGISTER_OK);
 	handler->send_soft((char*) packet.contents(), packet.size());
 
 	return true;

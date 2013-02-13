@@ -4,7 +4,7 @@
 #include "SocketHandler.h"
 #include "AuthSocket.h"
 
-SocketHandler::SocketHandler() : session_(NULL), serveraddress(ip), service(port), peer(NULL), slave(NULL)
+SocketHandler::SocketHandler() : serveraddress(ip), service(port), peer(NULL), slave(NULL), session_(NULL)
 {
 }
 
@@ -37,7 +37,7 @@ void SocketHandler::open()
 
 	if (bind (s, (struct sockaddr *) &sin, sizeof(sin)) == SOCKET_ERROR)
 		throw std::exception ("Bind Error");
-   
+
 	if (listen (s, 5) == SOCKET_ERROR)
 		throw std::exception ("Listen Error");
 

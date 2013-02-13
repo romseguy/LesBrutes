@@ -1,5 +1,5 @@
-#ifndef _WINDOW_H
-#define _WINDOW_H
+#ifndef AUTHWINDOW_H
+#define AUTHWINDOW_H
 
 #include "../serveur/Config.h"
 
@@ -42,7 +42,7 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 			if (((AuthWindow*) data)->HandleLogon())
 			{
 				fl_alert("La connexion a réussi");
-				
+
 				((AuthWindow*) data)->resize(50, 50, 1024, 768);
 				delete ((AuthWindow*) data)->form_login;
 				((AuthWindow*) data)->redraw();

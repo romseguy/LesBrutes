@@ -1,5 +1,5 @@
-#ifndef _SOCKETHANDLER_H
-#define _SOCKETHANDLER_H
+#ifndef SOCKETHANDLER_H
+#define SOCKETHANDLER_H
 
 // Gère la socket
 class SocketHandler
@@ -29,7 +29,7 @@ class SocketHandler
 
 	private:
 		std::string serveraddress;
-		unsigned short service;
+		uint16_t service;
 		SOCKET peer;  // socket serveur
 		SOCKET slave; // socket client
 		Session* session_;

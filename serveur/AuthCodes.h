@@ -1,5 +1,5 @@
-#ifndef _AUTHCODES_H
-#define _AUTHCODES_H
+#ifndef AUTHCODES_H
+#define AUTHCODES_H
 
 // Discriminant (commande)
 enum eCmd

@@ -1,5 +1,5 @@
-#ifndef _SOCKET_H
-#define _SOCKET_H
+#ifndef AUTHSOCKET_H
+#define AUTHSOCKET_H
 
 class AuthSocket : public SocketHandler::Session
 {

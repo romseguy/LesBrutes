@@ -3,7 +3,7 @@
 #include "../serveur/Config.h"
 #include "../serveur/SocketHandler.h"
 
-SocketHandler::SocketHandler() : session_(NULL), serveraddress(ip), service(port), peer(NULL)
+SocketHandler::SocketHandler() : serveraddress(ip), service(port), peer(NULL), session_(NULL)
 {
 }
 
@@ -28,7 +28,7 @@ void SocketHandler::open()
 
 	SOCKET s = socket (AF_INET, SOCK_STREAM, ppe->p_proto);
 
-	if (s == INVALID_SOCKET) 
+	if (s == INVALID_SOCKET)
 		fl_alert("Socket invalide : %d", WSAGetLastError());
 
 	struct sockaddr_in sin;
