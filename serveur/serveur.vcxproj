@@ -76,6 +76,8 @@
   <ItemGroup>
     <ClInclude Include="AuthCodes.h" />
     <ClInclude Include="AuthSocket.h" />
+    <ClInclude Include="Brute.h" />
+    <ClInclude Include="BruteManager.h" />
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="ByteConverter.h" />
     <ClInclude Include="Config.h" />
