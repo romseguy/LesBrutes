@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "FL/Fl.h"
+#include <Fl.h>
 #include "FL/Fl_Widget.h"
 #include "FL/Fl_Window.h"
 #include "FL/Fl_Button.h"
