@@ -4,8 +4,6 @@
 #include "AuthSocket.h"
 #include "Config.h"
 
-bool stopEvent = false;
-
 int main()
 {
 	WSADATA wsaData;

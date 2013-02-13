@@ -45,24 +45,44 @@ void SocketHandler::set_session(Session* session)
 	session_ = session;
 }
 
-size_t SocketHandler::recv_soft(char* buf, size_t len)
+bool SocketHandler::recv_soft(char* buf, size_t len)
 {
-	int nBytes = recv(peer, buf, len, 0);
+	int bytesRcvd = 0;
+	int bytesLeft = len;
+	int nBytes;
 
-	if (nBytes == SOCKET_ERROR)
-		throw std::runtime_error("Socket Error");
+	while (bytesRcvd < len)
+	{
+		nBytes = recv(peer, buf + bytesRcvd, bytesLeft, 0);
 
-	return nBytes;
+		if (nBytes == SOCKET_ERROR || nBytes == 0)
+			return false;
+
+		bytesRcvd += nBytes;
+		bytesLeft -= nBytes;
+	}
+
+	return true;
 }
 
-size_t SocketHandler::send_soft(char* buf, size_t len)
+bool SocketHandler::send_soft(char* buf, size_t len)
 {
-	int nBytes = send(peer, buf, len, 0);
+	int bytesSent = 0;
+	int bytesLeft = len;
+	int nBytes;
 
-	if (nBytes == SOCKET_ERROR)
-		throw std::runtime_error("Socket Error");
+	while (bytesSent < len)
+	{
+		nBytes = send(peer, buf + bytesSent, bytesLeft, 0);
 
-	return nBytes;
+		if (nBytes == SOCKET_ERROR || nBytes == 0)
+			return false;
+
+		bytesSent += nBytes;
+		bytesLeft -= nBytes;
+	}
+
+	return true;
 }
 
 void SocketHandler::handle_input()

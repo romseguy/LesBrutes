@@ -19,8 +19,8 @@ int main()
 	}
 	catch (std::runtime_error& e)
 	{
-		std::cout << "SOCKET ERROR : " << e.what() << std::endl;
-		std::cout << "WSA ERROR : " << WSAGetLastError() << std::endl;
+		fl_alert("SOCKET ERROR : %s", e.what());
+		fl_alert("WSA ERROR : %d", WSAGetLastError());
 
 		delete handler;
 		WSACleanup();

@@ -20,8 +20,8 @@ class SocketHandler
 		void set_session(Session* session);
 		void wait_client();
 
-		size_t recv_soft(char* buf, size_t len);
-		size_t send_soft(char* buf, size_t len);
+		bool recv_soft(char* buf, size_t len);
+		bool send_soft(char* buf, size_t len);
 
 		void handle_input();
 

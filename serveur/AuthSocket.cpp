@@ -53,7 +53,7 @@ void AuthSocket::OnRead()
 	{
 		std::cout << "Attente d'une commande du client" << std::endl;
 
-		if (handler->recv_soft((char *) &cmd, 1) != 0)
+		if (handler->recv_soft((char *) &cmd, 1))
 		{
 			size_t i;
 			for (i = 0; i < CLIENT_TOTAL_COMMANDS; ++i)
