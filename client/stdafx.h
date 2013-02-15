@@ -27,3 +27,4 @@
 #include <FL/Fl_ask.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Text_Display.H>
+#include <FL/Fl_Text_Buffer.H>

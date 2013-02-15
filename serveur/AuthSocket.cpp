@@ -40,6 +40,9 @@ struct INFO_BRUTE_S
 	uint8_t                       cmd;
 	uint16_t                      size;
 	uint8_t                       level;
+	uint8_t                       hp;
+	uint8_t                       strength;
+	uint8_t                       speed;
 };
 **/
 
@@ -170,7 +173,7 @@ bool AuthSocket::HandleRegister()
 		packet << uint8_t(REGISTER_ALREADY_EXISTS);
 	else
 	{
-		BruteManager::getInstance().add(new Brute(l, p, uint8_t(1)));
+		BruteManager::getInstance().add(new Brute(l, p, 1, 100, 2, 3));
 		packet << uint8_t(REGISTER_OK);
 	}
 
@@ -206,8 +209,7 @@ bool AuthSocket::HandleInfoBrute()
 
 	// réponse
 	packet << uint8_t(INFO_BRUTE_S);
-	packet << uint16_t(1);
-	packet << b->getLevel();
+	packet << uint16_t(4) << b->getLevel() << b->getHp() << b->getStrength() << b->getSpeed();
 
 	delete b;
 

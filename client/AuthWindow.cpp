@@ -35,6 +35,9 @@ struct INFO_BRUTE_S
 	uint8_t                       cmd;
 	uint16_t                      size;
 	uint8_t                       level;
+	uint8_t                       hp;
+	uint8_t                       strength;
+	uint8_t                       speed;
 };
 **/
 
@@ -95,10 +98,10 @@ bool AuthWindow::HandleLogon()
 			return false;
 
 		buf.rpos(3);
-		uint8_t level;
-		buf >> level;
+		uint8_t level, hp, strength, speed;
+		buf >> level >> hp >> strength >> speed;
 
-		handler->set_session(new MainWindow(1024, 768, "Les Brutes", handler, new Brute(login, pwd, level)));
+		handler->set_session(new MainWindow(1024, 768, "Les Brutes", handler, new Brute(login, pwd, level, hp, strength, speed)));
 	}
 	else
 		fl_alert("Connexion : échec");
