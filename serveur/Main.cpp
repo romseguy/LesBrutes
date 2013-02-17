@@ -22,7 +22,7 @@ int main()
 	}
 	catch (std::runtime_error& e)
 	{
-		std::cout << "SOCKET ERROR : " << e.what() << std::endl;
+		std::cout << "EXCEPTION : " << e.what() << std::endl;
 		std::cout << "WSA ERROR : " << WSAGetLastError() << std::endl;
 
 		delete handler;

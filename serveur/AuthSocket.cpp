@@ -13,7 +13,7 @@ enum eStatus
 	STATUS_AUTHED
 };
 
-// Structure de lien entre une commande et une fonction
+// Structure de lien entre une commande (discriminant) et une fonction
 typedef struct CmdHandler
 {
 	eCmd                          cmd;
@@ -21,7 +21,6 @@ typedef struct CmdHandler
 	bool (AuthSocket::*cmd_handler)(void);
 } CmdHandler;
 
-// Initialisation de la structure
 const CmdHandler table[] =
 {
 	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
@@ -35,8 +34,9 @@ const CmdHandler table[] =
 void AuthSocket::OnRead()
 {
 	uint8_t cmd;
+	bool stopEvent = false;
 
-	while (true)
+	while (!stopEvent)
 	{
 		std::cout << "Attente d'une commande du client" << std::endl;
 
@@ -51,18 +51,17 @@ void AuthSocket::OnRead()
 					if ((*this.*table[i].cmd_handler)())
 						std::cout << "Commande : executee" << std::endl;
 					else
-					{
-						std::cout << "Commande : echec" << std::endl;
-						return;
-					}
+						throw std::runtime_error("Commande : echec");
 
 					break;
 				}
 			}
 
 			if (i == CLIENT_TOTAL_COMMANDS)
-				std::cout << "Commande : inconnue " << std::endl;
+				throw std::runtime_error("Commande : inconnue");
 		}
+		else
+			stopEvent = true;
 	}
 }
 
