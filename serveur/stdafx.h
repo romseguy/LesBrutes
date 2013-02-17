@@ -8,11 +8,16 @@
 #include "targetver.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 
 #include <iostream>
+
 #include <string>
 #include <vector>
+#include <fstream>
+#include <iterator>
 
 #include <winsock2.h>
 #include <windows.h>

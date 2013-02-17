@@ -55,7 +55,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalOptions>WSOCK32.LIB COMCTL32.LIB fltk.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>WSOCK32.LIB COMCTL32.LIB fltk.lib fltkimages.lib fltkjpeg.lib fltkpng.lib fltkzlib.lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>..\contrib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
