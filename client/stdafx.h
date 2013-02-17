@@ -14,10 +14,10 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include <string>
 #include <vector>
-#include <fstream>
 #include <iterator>
 
 #include <winsock2.h>

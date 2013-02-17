@@ -1,8 +1,6 @@
 #ifndef AUTHWINDOW_H
 #define AUTHWINDOW_H
 
-#include "../serveur/Config.h"
-
 class AuthWindow : public Fl_Window, public SocketHandler::Session
 {
 	public:

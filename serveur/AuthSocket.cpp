@@ -13,39 +13,6 @@ enum eStatus
 	STATUS_AUTHED
 };
 
-/** Messages
-struct LOGON_C, REGISTER_C
-{
-	uint8_t                       cmd;
-	uint16_t                      size;
-	char[]                        login;
-	char[]                        pwd;
-};
-
-struct LOGON_S, REGISTER_S
-{
-	uint8_t                       cmd;
-	uint8_t                       error;
-};
-
-struct INFO_BRUTE_C
-{
-	uint8_t                       cmd;
-	uint16_t                      size;
-	char[]                        login;
-};
-
-struct INFO_BRUTE_S
-{
-	uint8_t                       cmd;
-	uint16_t                      size;
-	uint8_t                       level;
-	uint8_t                       hp;
-	uint8_t                       strength;
-	uint8_t                       speed;
-};
-**/
-
 // Structure de lien entre une commande et une fonction
 typedef struct CmdHandler
 {
@@ -59,10 +26,11 @@ const CmdHandler table[] =
 {
 	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
 	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          },
-	{ INFO_BRUTE_C,          STATUS_AUTHED,    &AuthSocket::HandleInfoBrute         }
+	{ INFO_BRUTE_C,          STATUS_AUTHED,    &AuthSocket::HandleInfoBrute         },
+	{ GET_IMAGE_C,           STATUS_AUTHED,    &AuthSocket::HandleGetImage          }
 };
 
-#define CLIENT_TOTAL_COMMANDS 3
+#define CLIENT_TOTAL_COMMANDS 4
 
 void AuthSocket::OnRead()
 {
@@ -106,8 +74,7 @@ bool AuthSocket::HandleLogon()
 	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
 
-	if (!handler->recv_soft((char*) buf.contents(), 2))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(), 2)) return false;
 
 	uint16_t restant;
 	buf >> restant;
@@ -115,8 +82,7 @@ bool AuthSocket::HandleLogon()
 	// on recupère le restant des données
 	buf.resize(restant + buf.size());
 
-	if (!handler->recv_soft((char*) buf.contents(2), restant))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(2), restant)) return false;
 
 	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	std::string l, p;
@@ -144,23 +110,16 @@ bool AuthSocket::HandleRegister()
 {
 	std::cout << "Commande : register" << std::endl;
 	ByteBuffer buf, packet;
-
-	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
 
-	if (!handler->recv_soft((char*) buf.contents(), 2))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(), 2)) return false;
 
 	uint16_t restant;
 	buf >> restant;
-
-	// on recupère le restant des données
 	buf.resize(restant + buf.size());
 
-	if (!handler->recv_soft((char*) buf.contents(2), restant))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(2), restant)) return false;
 
-	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	std::string l, p;
 	buf.rpos(2);
 	buf >> l;
@@ -184,23 +143,16 @@ bool AuthSocket::HandleInfoBrute()
 {
 	std::cout << "Commande : info brute" << std::endl;
 	ByteBuffer buf, packet;
-
-	// buffer qui va recevoir les 2 octets correspondant à la taille du paquet restant
 	buf.resize(2);
 
-	if (!handler->recv_soft((char*) buf.contents(), 2))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(), 2)) return false;
 
 	uint16_t restant;
 	buf >> restant;
-
-	// on recupère le restant des données
 	buf.resize(restant + buf.size());
 
-	if (!handler->recv_soft((char*) buf.contents(2), restant))
-		return false;
+	if (!handler->recv_soft((char*) buf.contents(2), restant)) return false;
 
-	// décalage de 2 octets pour récupérer le login car rpos est remis à 0 avec le resize
 	std::string l;
 	buf.rpos(2);
 	buf >> l;
@@ -209,9 +161,34 @@ bool AuthSocket::HandleInfoBrute()
 
 	// réponse
 	packet << uint8_t(INFO_BRUTE_S);
-	packet << uint16_t(4) << b->getLevel() << b->getHp() << b->getStrength() << b->getSpeed();
+	packet << uint16_t(5);
+	packet << b->getPortraitId() << b->getLevel() << b->getHp() << b->getStrength() << b->getSpeed();
 
-	delete b;
+	return handler->send_soft((char*) packet.contents(), packet.size());
+}
+
+bool AuthSocket::HandleGetImage()
+{
+	std::cout << "Commande : get image" << std::endl;
+	uint8_t id;
+
+	if (!handler->recv_soft((char*) &id, 1)) return false;
+
+	std::ostringstream imgPath;
+	imgPath << "../contrib/brutesImages/personnages/Perso-" << static_cast<int>(id) << ".jpg";
+
+	// il est nécessaire de lire l'image en mode binaire pour le ByteBuffer
+	std::ifstream img(imgPath.str(), std::ios::binary);
+
+	ByteBuffer packet;
+	packet << uint8_t(GET_IMAGE_S);
+
+	// taille image
+	img.seekg (0, std::ios::end);
+	packet << uint16_t(img.tellg());
+	img.seekg (0, std::ios::beg);
+
+	packet << img;
 
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }

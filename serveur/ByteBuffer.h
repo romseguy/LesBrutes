@@ -75,19 +75,28 @@ class ByteBuffer
 		ByteBuffer &operator<<(const char *str)
 		{
 			if (size_t len = (str ? strlen(str) : 0))
-				append((uint8_t const*)str, len);
+				append((uint8_t const*) str, len);
 
 			append((uint8_t)0);
 			return *this;
 		}
 
-		// Images
+		// Images, fichiers...
 		ByteBuffer &operator<<(std::ifstream &fs)
 		{
-			std::copy(
-				std::istream_iterator<uint8_t>(fs),
-				std::istream_iterator<uint8_t>(),
-				std::back_inserter(storage));
+			// taille
+			fs.seekg (0, std::ios::end);
+			size_t len = fs.tellg();
+			fs.seekg (0, std::ios::beg);
+
+			// lecture vers un tableau de caractères pour notre fonction append
+			char* buffer = new char[len];
+			fs.read(buffer, len);
+			fs.close();
+
+			append((uint8_t const*) buffer, len);
+
+			delete[] buffer;
 
 			return *this;
 		}
@@ -207,17 +216,6 @@ class ByteBuffer
 
 			memcpy(&storage[m_wpos], src, cnt);
 			m_wpos += cnt;
-		}
-
-		// Ecriture : fichier
-		void write_file_to_vector(const char* filename)
-		{
-			std::ifstream fs(filename);
-
-			std::copy(
-				std::istream_iterator<uint8_t>(fs),
-				std::istream_iterator<uint8_t>(),
-				std::back_inserter(storage));
 		}
 
 		// Lecture générique
