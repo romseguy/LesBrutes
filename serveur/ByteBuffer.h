@@ -81,6 +81,17 @@ class ByteBuffer
 			return *this;
 		}
 
+		// Images
+		ByteBuffer &operator<<(std::ifstream &fs)
+		{
+			std::copy(
+				std::istream_iterator<uint8_t>(fs),
+				std::istream_iterator<uint8_t>(),
+				std::back_inserter(storage));
+
+			return *this;
+		}
+
 		// Operateur >> byte,short,int,long
 		ByteBuffer &operator>>(uint8_t &value)
 		{
@@ -196,6 +207,17 @@ class ByteBuffer
 
 			memcpy(&storage[m_wpos], src, cnt);
 			m_wpos += cnt;
+		}
+
+		// Ecriture : fichier
+		void write_file_to_vector(const char* filename)
+		{
+			std::ifstream fs(filename);
+
+			std::copy(
+				std::istream_iterator<uint8_t>(fs),
+				std::istream_iterator<uint8_t>(),
+				std::back_inserter(storage));
 		}
 
 		// Lecture générique
