@@ -26,10 +26,11 @@ const CmdHandler table[] =
 	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
 	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          },
 	{ INFO_BRUTE_C,          STATUS_AUTHED,    &AuthSocket::HandleInfoBrute         },
-	{ GET_IMAGE_C,           STATUS_AUTHED,    &AuthSocket::HandleGetImage          }
+	{ GET_IMAGE_C,           STATUS_AUTHED,    &AuthSocket::HandleGetImage          },
+	{ GET_OPPONENT_C,        STATUS_AUTHED,    &AuthSocket::HandleGetOpponent       }
 };
 
-#define CLIENT_TOTAL_COMMANDS 4
+#define CLIENT_TOTAL_COMMANDS 5
 
 void AuthSocket::OnRead()
 {
@@ -188,6 +189,45 @@ bool AuthSocket::HandleGetImage()
 	img.seekg (0, std::ios::beg);
 
 	packet << img;
+
+	return handler->send_soft((char*) packet.contents(), packet.size());
+}
+
+bool AuthSocket::HandleGetOpponent()
+{
+	std::cout << "Commande : get opponent" << std::endl;
+	ByteBuffer buf, packet;
+	buf.resize(2);
+
+	if (!handler->recv_soft((char*) buf.contents(), 2)) return false;
+
+	uint16_t restant;
+	buf >> restant;
+	buf.resize(restant + buf.size());
+
+	if (!handler->recv_soft((char*) buf.contents(2), restant)) return false;
+
+	std::string l;
+	buf.rpos(2);
+	buf >> l;
+
+	// on récupère une brute du même niveau
+	Brute* opp = BruteManager::getInstance().get(l, BruteManager::getInstance().get(l)->getLevel());
+
+	// réponse
+	packet << uint8_t(GET_OPPONENT_S);
+
+	if (!opp)
+	{
+		packet << uint8_t(OPPONENT_KO);
+		packet << uint16_t(0);
+	}
+	else
+	{
+		packet << uint8_t(OPPONENT_OK);
+		packet << uint16_t(opp->getLogin().length() + 1);
+		packet << opp->getLogin();
+	}
 
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }

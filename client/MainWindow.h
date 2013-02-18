@@ -6,36 +6,35 @@
 class MainWindow : public Fl_Window, public SocketHandler::Session
 {
 	public:
-		MainWindow(int w, int h, const char* name, SocketHandler* s, Brute* brute) : handler(s), brute(brute), Fl_Window(w, h, name)
+		MainWindow(int w, int h, const char* name, SocketHandler* s, Brute* brute) : w(w), h(h), handler(s), me(brute), Fl_Window(w, h, name)
 		{
-			std::ostringstream ss;
-			fl_register_images();
-
 			menubar = new Fl_Menu_Bar(0, 0, w, 30);
 			menubar->add("Fichier/Logout", 0, menu_cb, (void*) this);
 			menubar->add("Fichier/Quitter", 0, menu_cb, (void*) this);
 			menubar->add("Combat/Rechercher", 0, menu_cb, (void*) this);
 			menubar->add("Combat/Lancer", 0, menu_cb, (void*) this);
 
-			Fl_Group* me = new Fl_Group(0, 50, w/2, h/2);
+			std::ostringstream ss;
+			fl_register_images();
+
+			// affichage de notre brute
+			Fl_Group* left = new Fl_Group(0, 50, w/2, h/2-40);
 			{
-				// portrait brute
-				Fl_JPEG_Image* jpg = new Fl_JPEG_Image("Portrait", brute->getPortrait());
+				// portrait
+				Fl_JPEG_Image* jpg = new Fl_JPEG_Image("Portrait", me->getPortrait());
 				Fl_Box* box = new Fl_Box(w/2 - jpg->w(), 100, jpg->w(), jpg->h());
 				box->image(jpg);
 
-				// nom brute
-				Fl_Text_Display* disp_name = new Fl_Text_Display(0, 50, w/2, 40);
+				// nom
+				Fl_Text_Display* disp_name = new Fl_Text_Display(5, 50, w/2 - 5, 40);
 				Fl_Text_Buffer*  buff_name = new Fl_Text_Buffer();
 				disp_name->buffer(buff_name);
 				disp_name->color(FL_BACKGROUND_COLOR);
 				disp_name->textsize(20);
-
-				ss << "La cellule de " << brute->getLogin();
-
+				ss << "La cellule de " << me->getLogin();
 				buff_name->text(ss.str().c_str());
 
-				// infos brute
+				// infos
 				Fl_Text_Display* disp = new Fl_Text_Display(20, 100, w/2 - jpg->w() - 20, jpg->h());
 				Fl_Text_Buffer*  buff = new Fl_Text_Buffer();
 				disp->buffer(buff);
@@ -43,21 +42,25 @@ class MainWindow : public Fl_Window, public SocketHandler::Session
 				disp->textsize(15);
 
 				ss.clear(); ss.str("");
-				ss << "Niveau : "      << static_cast<int>(brute->getLevel())    << std::endl;
-				ss << "Vie : "         << static_cast<int>(brute->getHp())       << std::endl;
-				ss << "Force : "       << static_cast<int>(brute->getStrength()) << std::endl;
-				ss << "Rapidité : "    << static_cast<int>(brute->getSpeed())    << std::endl;
+				ss << "Niveau : "      << static_cast<int>(me->getLevel())    << std::endl;
+				ss << "Vie : "         << static_cast<int>(me->getHp())       << std::endl;
+				ss << "Force : "       << static_cast<int>(me->getStrength()) << std::endl;
+				ss << "Rapidité : "    << static_cast<int>(me->getSpeed())    << std::endl;
 
 				buff->text(ss.str().c_str());
 			}
-			me->end();
+			left->end();
 
 			end();
 			show();
 		}
 
 		virtual ~MainWindow() {}
+
 		virtual void OnRead() {}
+
+		bool HandleSearch();
+		bool HandleCombat();
 
 		// menubar : static callback
 		static void menu_cb(Fl_Widget* w, void* data)
@@ -77,11 +80,20 @@ class MainWindow : public Fl_Window, public SocketHandler::Session
 
 			if (strcmp(picked, "Fichier/Logout") == 0)
 				handler->set_session(new AuthWindow(400, 400, "Les Brutes : Connexion", handler));
+
+			if (strcmp(picked, "Combat/Rechercher") == 0)
+				if (!HandleSearch())
+					fl_alert("La commande de recherche a échouée");
+
+			if (strcmp(picked, "Combat/Lancer") == 0)
+				if (!HandleCombat())
+					fl_alert("La commande de combat a échouée");
 		}
 
 	private:
+		int w, h;
 		SocketHandler* handler;
-		Brute* brute;
+		Brute* me;
 		Fl_Menu_Bar *menubar;
 };
 

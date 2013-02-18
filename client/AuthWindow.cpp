@@ -6,7 +6,6 @@
 #include "../serveur/Brute.h"
 
 #include "MainWindow.h"
-#include "AuthWindow.h"
 
 bool AuthWindow::HandleLogon()
 {

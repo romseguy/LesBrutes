@@ -11,7 +11,9 @@ enum eCmd
 	INFO_BRUTE_C                  = 0x04,
 	INFO_BRUTE_S                  = 0x05,
 	GET_IMAGE_C                   = 0x06,
-	GET_IMAGE_S                   = 0x07
+	GET_IMAGE_S                   = 0x07,
+	GET_OPPONENT_C                = 0x08,
+	GET_OPPONENT_S                = 0x09
 };
 
 // Codes d'erreur
@@ -26,6 +28,12 @@ enum RegisterResult
 	REGISTER_OK                   = 0x00,
 	REGISTER_KO                   = 0x01,
 	REGISTER_ALREADY_EXISTS       = 0x02
+};
+
+enum OpponentResult
+{
+	OPPONENT_OK                   = 0x00,
+	OPPONENT_KO                   = 0x01
 };
 
 /**************************************************
@@ -47,7 +55,7 @@ struct LOGON_S // REGISTER_S
 	uint8_t                       error;
 };
 
-struct INFO_BRUTE_C
+struct INFO_BRUTE_C // GET_OPPONENT_C
 {
 	uint8_t                       cmd;
 	uint16_t                      size;
@@ -58,6 +66,7 @@ struct INFO_BRUTE_S
 {
 	uint8_t                       cmd;
 	uint16_t                      size;
+	uint8_t                       portraitId;
 	uint8_t                       level;
 	uint8_t                       hp;
 	uint8_t                       strength;
@@ -75,6 +84,14 @@ struct GET_IMAGE_S
 	uint8_t                       cmd;
 	uint16_t                      size;
 	uint8_t                       img;
+};
+
+struct GET_OPPONENT_S
+{
+	uint8_t                       cmd;
+	uint8_t                       error;
+	uint16_t                      size;
+	char                          login;
 };
 
 #endif
