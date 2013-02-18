@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "Sockethandler.h"
-#include "AuthSocket.h"
+#include "CmdSocket.h"
 #include "Config.h"
 
 int main()
@@ -14,7 +14,7 @@ int main()
 	try
 	{
 		handler->open();
-		handler->set_session(new AuthSocket(handler));
+		handler->set_session(new CmdSocket(handler));
 		std::cout << "Serveur ON" << std::endl;
 		handler->wait_client();
 		std::cout << "Nouveau client" << std::endl;

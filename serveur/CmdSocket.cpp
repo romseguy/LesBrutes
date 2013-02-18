@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SocketHandler.h"
-#include "AuthSocket.h"
+#include "CmdSocket.h"
 #include "AuthCodes.h"
 #include "ByteBuffer.h"
 #include "BruteManager.h"
@@ -18,21 +18,21 @@ typedef struct CmdHandler
 {
 	eCmd                          cmd;
 	uint8_t                       status;
-	bool (AuthSocket::*cmd_handler)(void);
+	bool (CmdSocket::*cmd_handler)(void);
 } CmdHandler;
 
 const CmdHandler table[] =
 {
-	{ LOGON_C,               STATUS_CONNECTED, &AuthSocket::HandleLogon             },
-	{ REGISTER_C,            STATUS_CONNECTED, &AuthSocket::HandleRegister          },
-	{ INFO_BRUTE_C,          STATUS_AUTHED,    &AuthSocket::HandleInfoBrute         },
-	{ GET_IMAGE_C,           STATUS_AUTHED,    &AuthSocket::HandleGetImage          },
-	{ GET_OPPONENT_C,        STATUS_AUTHED,    &AuthSocket::HandleGetOpponent       }
+	{ LOGON_C,               STATUS_CONNECTED, &CmdSocket::HandleLogon             },
+	{ REGISTER_C,            STATUS_CONNECTED, &CmdSocket::HandleRegister          },
+	{ INFO_BRUTE_C,          STATUS_AUTHED,    &CmdSocket::HandleInfoBrute         },
+	{ GET_IMAGE_C,           STATUS_AUTHED,    &CmdSocket::HandleGetImage          },
+	{ GET_OPPONENT_C,        STATUS_AUTHED,    &CmdSocket::HandleGetOpponent       }
 };
 
 #define CLIENT_TOTAL_COMMANDS 5
 
-void AuthSocket::OnRead()
+void CmdSocket::OnRead()
 {
 	uint8_t cmd;
 	bool stopEvent = false;
@@ -66,7 +66,7 @@ void AuthSocket::OnRead()
 	}
 }
 
-bool AuthSocket::HandleLogon()
+bool CmdSocket::HandleLogon()
 {
 	std::cout << "Commande : challenge" << std::endl;
 	ByteBuffer buf, packet;
@@ -106,7 +106,7 @@ bool AuthSocket::HandleLogon()
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }
 
-bool AuthSocket::HandleRegister()
+bool CmdSocket::HandleRegister()
 {
 	std::cout << "Commande : register" << std::endl;
 	ByteBuffer buf, packet;
@@ -139,7 +139,7 @@ bool AuthSocket::HandleRegister()
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }
 
-bool AuthSocket::HandleInfoBrute()
+bool CmdSocket::HandleInfoBrute()
 {
 	std::cout << "Commande : info brute" << std::endl;
 	ByteBuffer buf, packet;
@@ -167,7 +167,7 @@ bool AuthSocket::HandleInfoBrute()
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }
 
-bool AuthSocket::HandleGetImage()
+bool CmdSocket::HandleGetImage()
 {
 	std::cout << "Commande : get image" << std::endl;
 	uint8_t id;
@@ -193,7 +193,7 @@ bool AuthSocket::HandleGetImage()
 	return handler->send_soft((char*) packet.contents(), packet.size());
 }
 
-bool AuthSocket::HandleGetOpponent()
+bool CmdSocket::HandleGetOpponent()
 {
 	std::cout << "Commande : get opponent" << std::endl;
 	ByteBuffer buf, packet;

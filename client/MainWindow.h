@@ -18,7 +18,7 @@ class MainWindow : public Fl_Window, public SocketHandler::Session
 			fl_register_images();
 
 			// affichage de notre brute
-			Fl_Group* left = new Fl_Group(0, 50, w/2, h/2-40);
+			Fl_Group* left = new Fl_Group(0, 50, w/2, h/2 - 40);
 			{
 				// portrait
 				Fl_JPEG_Image* jpg = new Fl_JPEG_Image("Portrait", me->getPortrait());
@@ -56,9 +56,9 @@ class MainWindow : public Fl_Window, public SocketHandler::Session
 		}
 
 		virtual ~MainWindow() {}
-
 		virtual void OnRead() {}
 
+		// Ces méthodes retournent false en cas d'erreur au niveau de l'envoi ou de la réception des messages
 		bool HandleSearch();
 		bool HandleCombat();
 

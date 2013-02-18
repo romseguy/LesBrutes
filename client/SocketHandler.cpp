@@ -84,9 +84,3 @@ bool SocketHandler::send_soft(char* buf, size_t len)
 
 	return true;
 }
-
-void SocketHandler::handle_input()
-{
-	if (session_ != NULL)
-		session_->OnRead();
-}

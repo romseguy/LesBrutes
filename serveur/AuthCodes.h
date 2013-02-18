@@ -45,7 +45,7 @@ struct LOGON_C // REGISTER_C
 {
 	uint8_t                       cmd;
 	uint16_t                      size;
-	char                          login;
+	char                          login; // plutôt un char[] mais de longueur inconnue
 	char                          pwd;
 };
 

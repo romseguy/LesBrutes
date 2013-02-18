@@ -50,6 +50,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -75,7 +76,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AuthCodes.h" />
-    <ClInclude Include="AuthSocket.h" />
+    <ClInclude Include="CmdSocket.h" />
     <ClInclude Include="Brute.h" />
     <ClInclude Include="BruteManager.h" />
     <ClInclude Include="ByteBuffer.h" />
@@ -87,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="AuthSocket.cpp" />
+    <ClCompile Include="CmdSocket.cpp" />
     <ClCompile Include="SocketHandler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

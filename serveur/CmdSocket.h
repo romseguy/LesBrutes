@@ -1,11 +1,11 @@
-#ifndef AUTHSOCKET_H
-#define AUTHSOCKET_H
+#ifndef CMDSOCKET_H
+#define CMDSOCKET_H
 
-class AuthSocket : public SocketHandler::Session
+class CmdSocket : public SocketHandler::Session
 {
 	public:
-		AuthSocket(SocketHandler* _handler) : handler(_handler), authed(false) {}
-		virtual ~AuthSocket() {}
+		CmdSocket(SocketHandler* _handler) : handler(_handler), authed(false) {}
+		virtual ~CmdSocket() {}
 
 		virtual void OnRead();
 

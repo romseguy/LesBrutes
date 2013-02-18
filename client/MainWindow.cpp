@@ -9,7 +9,7 @@
 
 bool MainWindow::HandleSearch()
 {
-	// requête pour récupérer le login d'un opposant du même niveau
+	// requête GET_OPPONENT_C
 	ByteBuffer packet;
 	packet << uint8_t(GET_OPPONENT_C);
 	packet << uint16_t(me->getLogin().length() + 1);
@@ -17,7 +17,7 @@ bool MainWindow::HandleSearch()
 
 	if (!handler->send_soft((char*) packet.contents(), packet.size())) return false;
 
-	// réponse
+	// réponse GET_OPPONENT_S
 	ByteBuffer buf;
 	buf.resize(4);
 
@@ -41,7 +41,7 @@ bool MainWindow::HandleSearch()
 	std::string login;
 	buf >> login;
 
-	// requête pour récupérer les infos de la brute adverse
+	// requête INFO_BRUTE_C
 	packet.clear();
 	packet << uint8_t(INFO_BRUTE_C);
 	packet << uint16_t(login.length() + 1);
@@ -49,7 +49,7 @@ bool MainWindow::HandleSearch()
 
 	if (!handler->send_soft((char*) packet.contents(), packet.size())) return false;
 
-	// réponse
+	// réponse INFO_BRUTE_S
 	buf.clear();
 	buf.resize(3);
 
@@ -66,14 +66,14 @@ bool MainWindow::HandleSearch()
 	uint8_t portraitId, level, hp, strength, speed;
 	buf >> portraitId >> level >> hp >> strength >> speed;
 
-	// requête pour récupérer l'image du portrait
+	// requête GET_IMAGE_C
 	packet.clear();
 	packet << uint8_t(GET_IMAGE_C);
 	packet << uint8_t(portraitId);
 
 	if (!handler->send_soft((char*) packet.contents(), packet.size())) return false;
 
-	// réponse image portrait
+	// réponse GET_IMAGE_S
 	buf.clear();
 	buf.resize(3);
 
@@ -88,13 +88,14 @@ bool MainWindow::HandleSearch()
 
 	Brute* brute_opp = new Brute(login, "", level, hp, strength, speed, buf.contents(3));
 
-	// modification IHM
+	// IHM
 	std::ostringstream ss;
 	fl_register_images();
 
 	begin();
 		size_t w_found = w/2 - 100;
 
+		// message de confirmation qu'un adversaire à été trouvé
 		Fl_Text_Display* disp_found = new Fl_Text_Display((w/2 - w_found)/2, h/2 - 30, w_found, 30);
 		Fl_Text_Buffer*  buff_found = new Fl_Text_Buffer();
 		disp_found->buffer(buff_found);
@@ -104,14 +105,15 @@ bool MainWindow::HandleSearch()
 
 		size_t left_opp_y = h/2 + 100;
 
+		// affichage de la brute adverse
 		Fl_Group* left_opp = new Fl_Group(0, left_opp_y, w/2, h/2);
 		{
-			// portrait opposant
+			// portrait
 			Fl_JPEG_Image* jpg_opp = new Fl_JPEG_Image("Portrait", brute_opp->getPortrait());
 			Fl_Box* box_opp = new Fl_Box(w/2 - jpg_opp->w(), left_opp_y + 50, jpg_opp->w(), jpg_opp->h());
 			box_opp->image(jpg_opp);
 
-			// nom opposant
+			// nom
 			Fl_Text_Display* disp_name_opp = new Fl_Text_Display(5, left_opp_y, w/2 - 5, 40);
 			Fl_Text_Buffer*  buff_name_opp = new Fl_Text_Buffer();
 			disp_name_opp->buffer(buff_name_opp);
@@ -120,7 +122,7 @@ bool MainWindow::HandleSearch()
 			ss << "La cellule de " << brute_opp->getLogin();
 			buff_name_opp->text(ss.str().c_str());
 
-			// infos opposant
+			// infos
 			Fl_Text_Display* disp_opp = new Fl_Text_Display(20, left_opp_y + 50, w/2 - jpg_opp->w() - 20, jpg_opp->h());
 			Fl_Text_Buffer*  buff_opp = new Fl_Text_Buffer();
 			disp_opp->buffer(buff_opp);
@@ -144,7 +146,7 @@ bool MainWindow::HandleSearch()
 
 bool MainWindow::HandleCombat()
 {
-	// modification IHM
+	// IHM
 	begin();
 		Fl_Group* right = new Fl_Group(w/2, 50, w/2, h-50);
 		{
