@@ -6,21 +6,19 @@ class AuthWindow : public Fl_Window, public SocketHandler::Session
 	public:
 		AuthWindow(int w, int h, const char* name, SocketHandler* s) : handler(s), Fl_Window(w, h, name)
 		{
-			begin();
+			form_login = new Fl_Group(0, 0, w, h);
+			{
+				size_t offset_x = 120;
+				size_t offset_y = 120;
+				txt_login               = new Fl_Input        (offset_x,    offset_y+0,   200, 25, "Login");
+				txt_pwd                 = new Fl_Secret_Input (offset_x,    offset_y+30,  200, 25, "Mot de passe");
+				Fl_Button* but_login    = new Fl_Button       (offset_x+50, offset_y+60,  100, 25, "Connexion");
+				Fl_Button* but_register = new Fl_Button       (offset_x+50, offset_y+90,  100, 25, "Inscription");
 
-				form_login = new Fl_Group(0, 0, w, h);
-				{
-					size_t offset_x = 120;
-					size_t offset_y = 120;
-					txt_login               = new Fl_Input        (offset_x,    offset_y+0,   200, 25, "Login");
-					txt_pwd                 = new Fl_Secret_Input (offset_x,    offset_y+30,  200, 25, "Mot de passe");
-					Fl_Button* but_login    = new Fl_Button       (offset_x+50, offset_y+60,  100, 25, "Connexion");
-					Fl_Button* but_register = new Fl_Button       (offset_x+50, offset_y+90,  100, 25, "Inscription");
-
-					but_login->callback(but_login_cb, (void*) this);
-					but_register->callback(but_register_cb, (void*) this);
-				}
-				form_login->end();
+				but_login->callback(but_login_cb, (void*) this);
+				but_register->callback(but_register_cb, (void*) this);
+			}
+			form_login->end();
 
 			end();
 			show();
